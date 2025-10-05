@@ -135,12 +135,7 @@
 
                             <div hidden class="row mb-3 border mx-2 rounded" id="conatiner_formPlanesPV">
                                 <label for="passw_user" class="form-label">Planes de fichas</label>
-                                <div class="col-8" id="container_planesPV">
-
-                                    <p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">1hora - $5.00</p>
-                                    <p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">8horas - $10.00</p>
-                                    <p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">24horas - $20.00</p>
-                                </div>
+                                <div class="col-8" id="container_planesPV"></div>
                                 <div class="col-4 d-flex justify-content-center align-items-center">
                                     <button class="btn btn-outline-secondary m-auto d-block " type="button" id="btn_add_plan_pv">
                                         <i class="bi bi-plus-square"></i>
@@ -150,7 +145,7 @@
                             </div>
                             <div hidden class="row mb-3 border mx-2 rounded" id="conatiner_formTotalFichasPV">
                                 <label for="passw_user" class="form-label">Total de fichas (actualmente)</label>
-                                <div class="col-12">
+                                <div class="col-12" id="container_fichasTotalesPV">
 
                                     <p class="mb-1"><b>200</b> fichas de <b>$5.00</b></p>
                                     <p class="mb-1"><b>200</b> fichas de <b>$10</b></p>
@@ -209,11 +204,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <button
-                                type="button"
-                                class="btn btn-primary btn-sm m-2">
-                                Agregar Fichas
-                            </button>
+                            <button id="btn_add_fichas" type="button" class="btn btn-primary btn-sm m-2"> Agregar Fichas </button>
                             <div class="border container rounded">
                                 <div class="timeline">
                                     <div class="timeline-item">
@@ -393,26 +384,26 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 
                 </div>
-                </div>
             </div>
         </div>
     </div>
-    <!-- __________________________________________________________________________________________________________________________ -->
+</div>
+<!-- __________________________________________________________________________________________________________________________ -->
 
 
 <!-- _______________________________________________________________MODAL4___________________________________________________________ -->
 
-<!-- Estructura del Modal FORM ADD PLANES_FICHAS PVD H DH DHJj-->
+<!-- Estructura del Modal FORM ADD PLANES_FICHAS-->
 <div class="modal fade" id="modal_addPlanesPV" tabindex="-1" aria-labelledby="_miModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-       <div class="modal-content">
+        <div class="modal-content">
             <!-- Encabezado -->
             <div class="modal-header">
                 <h5 class="modal-title" id="_miModalLabel">Registrar Plan de fichas</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <!-- Cuerpo --> 
+            <!-- Cuerpo -->
             <div class="modal-body px-4">
                 <div class="mb-3">
                     <input type="text" name="id_planes_pv_client" id="id_planes_pv_client">
@@ -428,7 +419,7 @@
                 <div class="mb-3">
                     <label for="" class="form-label">Precio</label>
                     <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         name="precioPlan_pv"
                         id="precioPlan_pv"
@@ -446,24 +437,58 @@
         </div>
     </div>
 </div>
-    <!-- __________________________________________________________________________________________________________________________ -->
 
+<!-- _______________________________________________________________MODAL5___________________________________________________________ -->
 
+<!-- Estructura del Modal FORM ADD FICHAS_TOTAL  -->
+<div class="modal fade" id="modal_addFichasOfTotal" tabindex="-1" aria-labelledby="_miModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Encabezado -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="_miModalLabel">Agregar fichas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
 
-        
+            <!-- Cuerpo -->
+            <div class="modal-body px-4">
+                <div class="mb-3">
+                    <label for="" class="form-label">¿A que plan deseas agregar?</label>
+                    <select
+                        class="form-select form-select-lg "
+                        name="plan_select_to_add_fichas"
+                        id="plan_select_to_add_fichas" required> <!--rellenado con jquery -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Cantidad a agregar: </label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="cantidad_fichas_add"
+                        id="cantidad_fichas_add"
+                        aria-describedby="helpId"
+                        placeholder="" required />
+                </div>
 
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" id="save_add_fichas" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
 
+            </div>
+        </div>
+    </div>
+</div>
 
-
-
-
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
         function suma(a, b) {
             return a + b;
         }
-    // Tu código aquí
-    $(function() { 
+        // Tu código aquí
+        $(function() {
             $.ajax({
                 url: "../resources/php/cortes_fichas_controller.php", // archivo PHP que consulta MySQL
                 type: "GET", // o POST
@@ -477,13 +502,13 @@
                         $("#id_locality_corte").append(
                             `<option value="${loc.id_localidad}">${loc.name_locality}</option>`
                         );
-                    });                      
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.error("Error en la petición:", error);
                 }
             });
-             
+
         });
 
 
@@ -494,23 +519,23 @@
         //Click AGREGAR CLIENTE
         $("#btn_add_client_pv").on("click", function() {
             var idLocalidad = $("#id_locality_corte").val();
-            // alert(idLocalidad);
             $("#id_localidad_pv").val(idLocalidad);
-            
             $("#modal_show_addClientPV").modal("show");
         });
-        
-        //Click AGREGAR PLANES P//
-        $("#btn_add_plan_pv").on("click", function() { 
-            var idClientPV = $("#id_client_corte").val();
-            // alert(idClientPV);
-            $("#id_planes_pv_client").val(idClientPV);
 
+        //Click AGREGAR PLANES P//
+        $("#btn_add_plan_pv").on("click", function() {
+            var idClientPV = $("#id_client_corte").val();
+            $("#id_planes_pv_client").val(idClientPV);
             $("#modal_addPlanesPV").modal("show");
         });
-        
-    
-        
+        //Click "AGREGAR FICHAS"
+        $("#btn_add_fichas").on("click", function() {
+            $("#modal_addFichasOfTotal").modal("show");
+        });
+
+
+
 
         $(function() {
             $('#btn_show_ticket').click(async function() {
@@ -543,18 +568,17 @@
                 $('#pdfPreview').html(
                     `<iframe src="${pdfUrl}" width="100%" height="100%" style="border:none;"></iframe>`
                 );
-
-                // Abrir modal
                 $("#modal_show_ticket").modal("show");
             });
-        }); 
+        });
 
-        $("#id_locality_corte").change(function(){
-                // obtener el valor seleccionado
-                let valor = $(this).val();
-                // alert(valor);
-                $.ajax({
-                url: "../resources/php/cortes_fichas_controller.php?id_pueblo="+valor, // archivo PHP que consulta MySQL
+        // AL CAMBIAR OPCIÓN DE LOCALIDAD _ PV:
+        $("#id_locality_corte").change(function() {
+            // obtener el valor seleccionado
+            let valor = $(this).val();
+            // alert(valor);
+            $.ajax({
+                url: "../resources/php/cortes_fichas_controller.php?id_pueblo=" + valor, // archivo PHP que consulta MySQL
                 type: "POST", // o POST
                 dataType: "json", // esperamos JSON
                 success: function(pv) {
@@ -566,103 +590,189 @@
                         $("#id_client_corte").append(
                             `<option value="${c_pv.id_client_pv}">${c_pv.nombre_pv}</option>`
                         );
-                    });                      
+                    });
                 },
                 error: function(xhr, status, error) {
                     console.error("Error en la petición:", error);
                 }
             });
             $('#conatiner_formClientPV').removeAttr("hidden");
-            // $("#conatiner_formPlanesPV").removeAttr("hidden");
-            // $("#conatiner_formTotalFichasPV").removeAttr("hidden");
-
-            }); 
-            
-});
-
-        //Client GUARDAR CLIENTE PV
-        $("#save_pv_cliente").on("click", function() {
-            var idLocalidad_input_locality = $("#id_locality_corte").val();
-            var nombrePV = $("#nombre_pv").val();
-            $.ajax({
-                url: "../resources/php/cortes_fichas_controller.php?idLocalidad_input_locality="+idLocalidad_input_locality+"&nombrePV="+nombrePV, // archivo PHP que consulta MySQL
-                type: "POST", // o POST
-                dataType: "json", // esperamos JSON
-                success: function(pv) {
-                    // alert("clientPV Saved");
-                    // Llenamos el select
-                    $(".id_client_corte_clss").empty();
-                    $(".id_client_corte_clss").append('<option disabled selected>Cliente</option>');
-
-                    $.each(pv, function(index, c_pv) {
-                        $(".id_client_corte_clss").append(
-                            `<option value="${c_pv.id_client_pv}">${c_pv.nombre_pv}</option>`
-                        );
-                    });   
-                    $("#modal_show_addClientPV").modal("hide");       
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en la petición:", error);
-                }
-            });
         });
 
-        $("#id_client_corte").change(function(){
-                // obtener el valor seleccionado
-                let id_cliente_consul_planes = $(this).val();
-                // alert(id_cliente_consul_planes);
-                $.ajax({
-                url: "../resources/php/cortes_fichas_controller.php?id_cliente_consul_planes="+id_cliente_consul_planes, // archivo PHP que consulta MySQL
-                type: "POST", // o POST
-                dataType: "json", // esperamos JSON
-                success: function(planes) {
-                    // Llenamos el select
-                    $("#container_planesPV").empty();
-                    $.each(planes, function(index, plan) {
-                        $("#container_planesPV").append(
-                            `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">${plan.nombre_plan} - ${plan.precio_plan}</p>
-                            `
-                        );
-                    });                           
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en la petición:", error);
-                }
-            });
-            // $('#conatiner_formClientPV').removeAttr("hidden");
-            $("#conatiner_formPlanesPV").removeAttr("hidden");
-            $("#conatiner_formTotalFichasPV").removeAttr("hidden");
+    });
 
-            }); 
+    //Client GUARDAR CLIENTE _ PV
+    $("#save_pv_cliente").on("click", function() {
+        var idLocalidad_input_locality = $("#id_locality_corte").val();
+        var nombrePV = $("#nombre_pv").val();
+        $.ajax({
+            url: "../resources/php/cortes_fichas_controller.php?idLocalidad_input_locality=" + idLocalidad_input_locality + "&nombrePV=" + nombrePV, // archivo PHP que consulta MySQL
+            type: "POST", // o POST
+            dataType: "json", // esperamos JSON
+            success: function(pv) {
+                // alert("clientPV Saved");
+                // Llenamos el select
+                $(".id_client_corte_clss").empty();
+                $(".id_client_corte_clss").append('<option disabled selected>Cliente</option>');
 
-
-        //Client GUARDAR PLAN PV
-        $("#save_plancliente").on("click", function() {
-            var idClientCorte = $("#id_planes_pv_client").val();
-            var nombrePlan_pv = $("#nombrePlan_pv").val();
-            var precioPlan_pv = $("#precioPlan_pv").val();
-            $.ajax({
-                url: "../resources/php/cortes_fichas_controller.php?idClientCorte="+idClientCorte+"&nombrePlan_pv="+nombrePlan_pv+"&precioPlan_pv="+precioPlan_pv, // archivo PHP que consulta MySQL
-                type: "POST", // o POST
-                dataType: "json", // esperamos JSON
-                success: function(planes) {
-                    // alert("clientPV Saved");
-                    // Llenamos el select
-                    $("#container_planesPV").empty();
-                    $.each(planes, function(index, plan) {
-                        $("#container_planesPV").append(
-                            `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">${plan.nombre_plan} - ${plan.precio_plan}</p>
-                            `
-                        );
-                    });   
-                    $("#modal_addPlanesPV").modal("hide");       
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error en la petición:", error);
-                }
-            });
+                $.each(pv, function(index, c_pv) {
+                    $(".id_client_corte_clss").append(
+                        `<option value="${c_pv.id_client_pv}">${c_pv.nombre_pv}</option>`
+                    );
+                });
+                $("#modal_show_addClientPV").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en la petición:", error);
+            }
         });
+    });
 
-      
-    </script>
-    <?php include("footer.php"); ?>
+    // AL CAMBIAR OPCIÓN DE CLIENTE PUNTO de VENTA:
+    $("#id_client_corte").change(function() {
+        // obtener el valor seleccionado
+        let id_cliente_consul_planes = $(this).val();
+        $.ajax({
+            url: "../resources/php/cortes_fichas_controller.php?id_cliente_consul_planes=" + id_cliente_consul_planes, // archivo PHP que consulta MySQL
+            type: "POST", // o POST
+            dataType: "json", // esperamos JSON
+            success: function(respuesta) {
+                    // Limpiar contenedores
+                    $("#container_planesPV").empty();
+                    $("#plan_select_to_add_fichas").empty();
+                    $("#container_fichasTotalesPV").empty();
+                    console.log(respuesta);
+                    console.log(respuesta.planes);
+                    console.log(respuesta.fichas);
+                    // 🔹 Acceder a los planes
+                    $.each(respuesta.planes, function(fichas, plan) {
+                        $("#container_planesPV").append(
+                            `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">
+                            ${plan.nombre_plan} - $${plan.precio_plan}
+                        </p>`
+                        );
+                        $("#plan_select_to_add_fichas").append(
+                            `<option value="${plan.id_plan_ficha}">
+                            ${plan.nombre_plan} - $${plan.precio_plan}
+                        </option>`
+                        );
+                        console.log(plan.id_plan_ficha);
+                            var idDelPlan = plan.id_plan_ficha;
+                        // UN AJAX POR CADA PLAN
+                        $.ajax({
+                            url: "../resources/php/cortes_fichas_controller.php?idDelPlan=" + idDelPlan, // archivo PHP que consulta MySQL
+                            type: "POST", // o POST
+                            dataType: "json", // esperamos JSON
+                            success: function(total_fichs) {
+
+                                // Si el valor existe y es mayor que 0
+                                if (total_fichs && total_fichs.cantidad_total > 0) {
+                                    $("#container_fichasTotalesPV").append(
+                                        `<p class="mb-1">
+                                            <b>${total_fichs.cantidad_total}</b> fichas de <b>$${plan.nombre_plan}</b>
+                                        </p>`
+                                    );
+                                } else {
+                                    // Si no hay registros, muestra 0
+                                    $("#container_fichasTotalesPV").append(
+                                        `<p class="mb-1">
+                                            <b>0</b> fichas de <b>$${plan.nombre_plan}</b>
+                                        </p>`
+                                    );
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error en la petición:", error);
+                               
+                            }
+                            
+                            
+                        });
+                          // 🔹 Acceder a las fichas
+                        // $.each(respuesta.fichas, function(fich) {
+                        //     $("#container_fichasTotalesPV").append(
+                        //         `<p class="mb-1"><b>${fich.cantidad_total}</b> fichas de <b>$${plan.precio_plan}</b></p>
+                        //         `
+                        //     );
+                        // });
+                        
+                    });
+
+                   
+
+                    
+                }
+
+                ,
+            error: function(xhr, status, error) {
+                console.error("Error en la petición:", error);
+            }
+        });
+        // $('#conatiner_formClientPV').removeAttr("hidden");
+        $("#conatiner_formPlanesPV").removeAttr("hidden");
+        $("#conatiner_formTotalFichasPV").removeAttr("hidden");
+
+    });
+
+
+    // GUARDAR PLAN PUNTO DE VENTA
+    $("#save_plancliente").on("click", function() {
+        var idClientCorte = $("#id_planes_pv_client").val();
+        var nombrePlan_pv = $("#nombrePlan_pv").val();
+        var precioPlan_pv = $("#precioPlan_pv").val();
+        $.ajax({
+            url: "../resources/php/cortes_fichas_controller.php?idClientCorte=" + idClientCorte + "&nombrePlan_pv=" + nombrePlan_pv + "&precioPlan_pv=" + precioPlan_pv, // archivo PHP que consulta MySQL
+            type: "POST",
+            dataType: "json",
+            success: function(planes) {
+                $("#container_planesPV").empty();
+                $("#plan_select_to_add_fichas").empty();
+                $("#container_fichasTotalesPV").empty();
+                $.each(planes, function(index, plan) {
+                    // MOSTRAR TOTAL DE PLANES
+                    $("#container_planesPV").append(
+                        `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">${plan.nombre_plan} -$${plan.precio_plan}</p>`
+                    );
+                    // MOSTRAR PLANES EN EL SELECT
+                    $("#plan_select_to_add_fichas").append(
+                        `<option value="${plan.id_plan_ficha}">${plan.nombre_plan} - $${plan.precio_plan}</option>`
+                    );
+                    // MOSTRAR TOTAL DE FICHAS
+                    $("#container_fichasTotalesPV").append(
+                        `<p class="mb-1"><b>0</b> fichas de <b>$${plan.precio_plan}</b></p>`
+                    );
+                });
+                $("#modal_addPlanesPV").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en la petición:", error);
+            }
+        });
+    });
+
+    // GUARDAR CANTIDAD DE FICHAS A AGREGAR
+    $("#save_add_fichas").on("click", function() {
+        var id_plan_select_to_add = $("#plan_select_to_add_fichas").val();
+        var cantidad_fichas_add = $("#cantidad_fichas_add").val();
+        $.ajax({
+            url: "../resources/php/cortes_fichas_controller.php?id_plan_select_to_add=" + id_plan_select_to_add + "&cantidad_fichas_add=" + cantidad_fichas_add,
+            type: "POST", // o POST
+            dataType: "json", // esperamos JSON
+            success: function(planes) {
+
+                // $("#container_planesPV").empty();
+                // $.each(planes, function(index, plan) {
+                //     $("#container_planesPV").append(
+                //         `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">${plan.nombre_plan} - ${plan.precio_plan}</p>
+                //         `
+                //     );
+                // });   
+                $("#modal_addFichasOfTotal").modal("hide");
+            },
+            error: function(xhr, status, error) {
+                console.error("Error en la petición:", error);
+            }
+        });
+    });
+</script>
+<?php include("footer.php"); ?>
