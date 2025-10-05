@@ -683,26 +683,10 @@
                             },
                             error: function(xhr, status, error) {
                                 console.error("Error en la petición:", error);
-                               
                             }
-                            
-                            
                         });
-                          // 🔹 Acceder a las fichas
-                        // $.each(respuesta.fichas, function(fich) {
-                        //     $("#container_fichasTotalesPV").append(
-                        //         `<p class="mb-1"><b>${fich.cantidad_total}</b> fichas de <b>$${plan.precio_plan}</b></p>
-                        //         `
-                        //     );
-                        // });
-                        
                     });
-
-                   
-
-                    
                 }
-
                 ,
             error: function(xhr, status, error) {
                 console.error("Error en la petición:", error);
@@ -738,9 +722,37 @@
                         `<option value="${plan.id_plan_ficha}">${plan.nombre_plan} - $${plan.precio_plan}</option>`
                     );
                     // MOSTRAR TOTAL DE FICHAS
-                    $("#container_fichasTotalesPV").append(
-                        `<p class="mb-1"><b>0</b> fichas de <b>$${plan.precio_plan}</b></p>`
-                    );
+                        var idDelPlan = plan.id_plan_ficha;
+                        // UN AJAX POR CADA PLAN
+                        $.ajax({
+                            url: "../resources/php/cortes_fichas_controller.php?idDelPlan=" + idDelPlan, // archivo PHP que consulta MySQL
+                            type: "POST", // o POST
+                            dataType: "json", // esperamos JSON
+                            success: function(total_fichs) {
+
+                                // Si el valor existe y es mayor que 0
+                                if (total_fichs && total_fichs.cantidad_total > 0) {
+                                    $("#container_fichasTotalesPV").append(
+                                        `<p class="mb-1">
+                                            <b>${total_fichs.cantidad_total}</b> fichas de <b>$${plan.nombre_plan}</b>
+                                        </p>`
+                                    );
+                                } else {
+                                    // Si no hay registros, muestra 0
+                                    $("#container_fichasTotalesPV").append(
+                                        `<p class="mb-1">
+                                            <b>0</b> fichas de <b>$${plan.nombre_plan}</b>
+                                        </p>`
+                                    );
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error("Error en la petición:", error);
+                            }
+                        });
+                    // $("#container_fichasTotalesPV").append(
+                    //     `<p class="mb-1"><b>0</b> fichas de <b>$${plan.nombre_plan}</b></p>`
+                    // );
                 });
                 $("#modal_addPlanesPV").modal("hide");
             },
