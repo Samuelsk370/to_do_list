@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-09-2025 a las 15:35:28
+-- Tiempo de generación: 06-10-2025 a las 01:06:09
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -126,6 +126,16 @@ CREATE TABLE `fichas_disponibles` (
   `id_plan_fk` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `fichas_disponibles`
+--
+
+INSERT INTO `fichas_disponibles` (`id_ficha_disponible`, `ult_contidad_add`, `cantidad_total`, `fecha_regis_cantidad`, `id_plan_fk`) VALUES
+(1, 50, 10, '2025-10-05 18:56:00', 8),
+(2, 100, 200, '2025-10-05 19:02:43', 6),
+(3, 20, 120, '2025-10-05 23:59:03', 2),
+(4, 300, 300, '2025-10-06 00:54:42', 9);
+
 -- --------------------------------------------------------
 
 --
@@ -190,9 +200,27 @@ CREATE TABLE `pend_finalizados` (
 CREATE TABLE `plan_fichas` (
   `id_plan_ficha` int(10) NOT NULL,
   `nombre_plan` varchar(100) NOT NULL,
-  `precio_plan` decimal(10,0) NOT NULL,
+  `precio_plan` decimal(10,2) NOT NULL,
   `id_cliente_pv_fk` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `plan_fichas`
+--
+
+INSERT INTO `plan_fichas` (`id_plan_ficha`, `nombre_plan`, `precio_plan`, `id_cliente_pv_fk`) VALUES
+(1, '1hra', 10.00, 2),
+(2, '5 horas', 15.00, 1),
+(3, '24hras', 20.00, 1),
+(4, '5hras', 15.00, 2),
+(5, '8hras', 18.00, 1),
+(6, '1Semana', 100.00, 1),
+(7, '1Dia', 25.00, 1),
+(8, '1mes', 250.00, 1),
+(9, '2meses', 500.00, 2),
+(10, '2dias', 40.00, 2),
+(12, '10Horas', 60.00, 2),
+(13, '1hora', 5.00, 6);
 
 -- --------------------------------------------------------
 
@@ -305,7 +333,7 @@ ALTER TABLE `empleados`
 -- AUTO_INCREMENT de la tabla `fichas_disponibles`
 --
 ALTER TABLE `fichas_disponibles`
-  MODIFY `id_ficha_disponible` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ficha_disponible` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `localidad`
@@ -323,7 +351,7 @@ ALTER TABLE `pend_finalizados`
 -- AUTO_INCREMENT de la tabla `plan_fichas`
 --
 ALTER TABLE `plan_fichas`
-  MODIFY `id_plan_ficha` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_plan_ficha` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas_pendientes`

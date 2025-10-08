@@ -144,7 +144,7 @@
                                 </div>
                             </div>
                             <div hidden class="row mb-3 border mx-2 rounded" id="conatiner_formTotalFichasPV">
-                                <label for="passw_user" class="form-label">Total de fichas (actualmente)</label>
+                                <label class="form-label">Total de fichas (actualmente)</label>
                                 <div class="col-12" id="container_fichasTotalesPV">
 
                                     <p class="mb-1"><b>200</b> fichas de <b>$5.00</b></p>
@@ -615,11 +615,7 @@
                 $(".id_client_corte_clss").empty();
                 $(".id_client_corte_clss").append('<option disabled selected>Cliente</option>');
 
-                $.each(pv, function(index, c_pv) {
-                    $(".id_client_corte_clss").append(
-                        `<option value="${c_pv.id_client_pv}">${c_pv.nombre_pv}</option>`
-                    );
-                });
+                               
                 $("#modal_show_addClientPV").modal("hide");
             },
             error: function(xhr, status, error) {
@@ -669,14 +665,17 @@
                                 if (total_fichs && total_fichs.cantidad_total > 0) {
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b>${total_fichs.cantidad_total}</b> fichas de <b>$${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
                                         </p>`
                                     );
+                                    // AQUI QUEDE. COLOCARLE EL ID AL PLAN DE (TOTALFICHASDISPONIBLES.), PARA CUANDO
+                                    // HAGA LA ACTUAIZACION, OBTENGA EL TOTAL ACTUAL Y LO MUESTRE EN LA ETIQUETA <B> DEL PLAN.
                                 } else {
                                     // Si no hay registros, muestra 0
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b>0</b> fichas de <b>$${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
+                                            
                                         </p>`
                                     );
                                 }
@@ -734,14 +733,15 @@
                                 if (total_fichs && total_fichs.cantidad_total > 0) {
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b>${total_fichs.cantidad_total}</b> fichas de <b>$${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
                                         </p>`
                                     );
                                 } else {
                                     // Si no hay registros, muestra 0
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b>0</b> fichas de <b>$${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
+                                            
                                         </p>`
                                     );
                                 }
@@ -770,20 +770,20 @@
             url: "../resources/php/cortes_fichas_controller.php?id_plan_select_to_add=" + id_plan_select_to_add + "&cantidad_fichas_add=" + cantidad_fichas_add,
             type: "POST", // o POST
             dataType: "json", // esperamos JSON
-            success: function(planes) {
+            success: function(respuesta) {
+                console.log("Respuesta del servidor:", respuesta);
 
-                // $("#container_planesPV").empty();
-                // $.each(planes, function(index, plan) {
-                //     $("#container_planesPV").append(
-                //         `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">${plan.nombre_plan} - ${plan.precio_plan}</p>
-                //         `
-                //     );
-                // });   
+                $.each(respuesta.fich_disp, function(index, total) {
+                    $(`#id_plan_${total.id_plan_fk}`).text(`${total.cantidad_total}`);
+                });
+
                 $("#modal_addFichasOfTotal").modal("hide");
             },
             error: function(xhr, status, error) {
-                console.error("Error en la petición:", error);
+                console.error("Error en la petición weeee:", error);
+                console.log("Respuesta del servidor:", xhr.responseText);
             }
+
         });
     });
 </script>
