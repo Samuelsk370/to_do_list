@@ -1,81 +1,82 @@
+
+
 <style>
-    .timeline {
-        position: relative;
-        margin: 0 auto;
-        padding: 20px 0;
-        width: 90%;
-        max-width: 700px;
-    }
+   .timeline {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 0;
+    width: 90%;
+    max-width: 700px;
+}
 
-    /* Línea vertical */
-    .timeline::before {
-        content: "";
-        position: absolute;
-        left: 30px;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: #ccc;
-    }
+/* Línea vertical */
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #ccc;
+    z-index: 0;
+}
 
-    .timeline-item {
-        position: relative;
-        padding-left: 70px;
-    }
+/* Cada item */
+.timeline-item {
+    position: relative;
+    padding-left: 70px;
+    z-index: 1; /* asegura que quede sobre la línea */
+}
 
-    /* El circulito */
-    .timeline-item::before {
-        content: "";
-        position: absolute;
-        left: 26px;
-        background: white;
-        border: 2px solid #007bff;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        top: 5px;
-    }
+/* El circulito */
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: 26px;
+    background: white;
+    border: 2px solid #007bff;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    top: 5px;
+    z-index: 2;
+}
 
-    .timeline-item h6 {
-        margin: 0;
-        font-size: 0.8rem;
-        font-weight: bold;
-        color: #007bff;
-        cursor: pointer;
-        /* transition: 0.1s; */
-    }
+/* Estilos de texto */
+.timeline-item h6 {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #007bff;
+    cursor: pointer;
+}
 
-    .timeline-item h6:hover {
-        color: #005fc4ff;
-    }
+.timeline-item h6:hover {
+    color: #005fc4ff;
+}
 
-    .timeline-item small {
-        display: block;
-        margin-bottom: 10px;
-        color: #777;
-        font-size: 0.7rem;
-    }
+.timeline-item small {
+    display: block;
+    margin-bottom: 10px;
+    color: #777;
+    font-size: 0.7rem;
+}
 
-    .timeline-item ul {
-        margin: 0;
-        padding-left: 20px;
-    }
+/* Scrollbar estético opcional */
+.border.container.rounded::-webkit-scrollbar {
+    width: 6px;
+}
 
-    .timeline-item ul li {
-        margin-bottom: 6px;
-    }
+.border.container.rounded::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 3px;
+}
 
-    .folder-icon {
-        font-size: 2rem;
-        /* tamaño del icono */
-        color: #f4b400;
-        /* color estilo carpeta */
-    }
+.border.container.rounded::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+}
 
-    .folder-container {
-        text-align: center;
-        width: 120px;
-    }
+    
 </style>
 <?php include("header.php"); ?>
 
@@ -169,20 +170,19 @@
 
                         <div class="col-md-6">
                             <button
+                                id="btn_add_corte_modal"
                                 type="button"
                                 class="btn btn-primary btn-sm m-2">
                                 Nuevo Corte
                             </button>
-                            <div class="border container rounded mb-3">
-                                <div class="timeline">
+                            <div class="border container rounded" style="margin-bottom:1rem; max-height: 300px; overflow-y: auto; overflow-x: hidden; position: relative;">
+                                <div class="timeline" id="">
                                     <div class="timeline-item">
                                         <h6 class="historial_list">UNEMECAPA (Residente Profesional)</h6>
                                         <small>04 sep, 2025</small>
-
                                     </div>
 
                                     <div class="timeline-item">
-
                                         <h6 class="historial_list">JoobsMx (Colaborador)</h6>
                                         <small>09 sep, 2025</small>
                                     </div>
@@ -191,26 +191,41 @@
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
+
                                     <div class="timeline-item">
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
+
+                                    <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+                                    <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+
+                                    <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+
                                     <div class="timeline-item">
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
                                 </div>
-
                             </div>
+
                         </div>
                         <div class="col-md-6">
                             <button id="btn_add_fichas" type="button" class="btn btn-primary btn-sm m-2"> Agregar Fichas </button>
-                            <div class="border container rounded">
-                                <div class="timeline">
+                            <div class="border container rounded" style="max-height: 300px; overflow-y: auto; overflow-x: hidden; position: relative;">
+                                <div class="timeline" id="container_historial_fichs">
                                     <div class="timeline-item">
                                         <h6 class="historial_list">UNEMECAPA (Residente Profesional)</h6>
                                         <small>04 sep, 2025</small>
-
                                     </div>
 
                                     <div class="timeline-item">
@@ -222,17 +237,33 @@
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
+
                                     <div class="timeline-item">
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
+
+                                    <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+                                     <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+
+                                    <div class="timeline-item">
+                                        <h6 class="historial_list">Starnet (Técnico)</h6>
+                                        <small>20 sep, 2025</small>
+                                    </div>
+
                                     <div class="timeline-item">
                                         <h6 class="historial_list">Starnet (Técnico)</h6>
                                         <small>20 sep, 2025</small>
                                     </div>
                                 </div>
-
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -243,11 +274,11 @@
 </div>
 
 <!-- Contenido a convertir -->
-<div id="toPdf" style="width:600px; padding:20px; background:#f9f9f9; border:1px solid #ccc;">
+<!-- <div id="toPdf" style="width:600px; padding:20px; background:#f9f9f9; border:1px solid #ccc;">
     <h2>Reporte de prueba</h2>
     <p>Este es el contenido que se convertirá en PDF y se mostrará aquí mismo.</p>
-</div>
-
+</div> -->
+<!-- QUEDE EN CREAR UNA TABLA PARA HISTORIAL DE FICHAS AGREGADAS -->
 
 <!-- ____________________________________________________MODAL 1______________________________________________________________________ -->
 <!-- Estructura del Modal DETALLES DEL CORTE -->
@@ -452,6 +483,51 @@
 
             <!-- Cuerpo -->
             <div class="modal-body px-4">
+                <input id="input_id_client" value="..." type="text">
+                <div class="mb-3">
+                    <label for="" class="form-label">¿A que plan deseas agregar?</label>
+                    <select
+                        class="form-select form-select-lg "
+                        name="plan_select_to_add_fichas"
+                        id="plan_select_to_add_fichas" required> <!--rellenado con jquery -->
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Cantidad a agregar: </label>
+                    <input
+                        type="number"
+                        class="form-control"
+                        name="cantidad_fichas_add"
+                        id="cantidad_fichas_add"
+                        aria-describedby="helpId"
+                        placeholder="" required />
+                </div>
+
+                <!-- Footer -->
+                <div class="modal-footer">
+                    <button type="button" id="save_add_fichas" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- _______________________________________________________________MODAL6___________________________________________________________ -->
+
+<!-- Estructura del Modal FORM ADD CORTE  -->
+<div class="modal fade" id="modal_addCorte" tabindex="-1" aria-labelledby="_miModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Encabezado -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="_miModalLabel">Nuevo corte</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <!-- Cuerpo -->
+            <div class="modal-body px-4">
+                <input id="" value="..." type="text">
                 <div class="mb-3">
                     <label for="" class="form-label">¿A que plan deseas agregar?</label>
                     <select
@@ -484,8 +560,8 @@
 
 <script>
     $(document).ready(function() {
-        function suma(a, b) {
-            return a + b;
+        function abrirModalHistoryFichs(){
+            alert("jvdjvdjj");
         }
         // Tu código aquí
         $(function() {
@@ -512,10 +588,7 @@
         });
 
 
-        // Click HISTORIAL
-        $(".historial_list").on("click", function() {
-            $("#modal_detalles_corte").modal("show");
-        });
+        
         //Click AGREGAR CLIENTE
         $("#btn_add_client_pv").on("click", function() {
             var idLocalidad = $("#id_locality_corte").val();
@@ -531,6 +604,10 @@
         });
         //Click "AGREGAR FICHAS"
         $("#btn_add_fichas").on("click", function() {
+            $("#modal_addFichasOfTotal").modal("show");
+        });
+        //Click "AGREGAR CORTE - MODAL SHOW"
+        $("#btn_add_corte_modal").on("click", function() {
             $("#modal_addFichasOfTotal").modal("show");
         });
 
@@ -591,15 +668,23 @@
                             `<option value="${c_pv.id_client_pv}">${c_pv.nombre_pv}</option>`
                         );
                     });
+                    $("#conatiner_formTotalFichasPV").attr("hidden", "");
+                    $("#conatiner_formPlanesPV").attr("hidden", "");
                 },
                 error: function(xhr, status, error) {
                     console.error("Error en la petición:", error);
                 }
             });
             $('#conatiner_formClientPV').removeAttr("hidden");
+        
+            
         });
 
     });
+    // Click HISTORIAL
+        $(".historial_list").on("click", function() {
+            $("#modal_detalles_corte").modal("show");
+        });
 
     //Client GUARDAR CLIENTE _ PV
     $("#save_pv_cliente").on("click", function() {
@@ -691,9 +776,39 @@
                 console.error("Error en la petición:", error);
             }
         });
-        // $('#conatiner_formClientPV').removeAttr("hidden");
+        $('#input_id_client').val(id_cliente_consul_planes);
         $("#conatiner_formPlanesPV").removeAttr("hidden");
         $("#conatiner_formTotalFichasPV").removeAttr("hidden");
+
+        // CONSULTAR TODO EL HISTORIAL DE FICHAS DEL CLIENTE.
+        $.ajax({
+            url: "../resources/php/cortes_fichas_controller.php?id_client_to_history=" + id_cliente_consul_planes,
+            type: "POST", // o POST
+            dataType: "json", // esperamos JSON
+            success: function(respuesta) {
+                console.log("Respuesta del servidor:", respuesta);
+                
+                    $("#container_historial_fichs").empty();
+                $.each(respuesta.hitory_fichs, function(index, historial) {
+                    $("#container_historial_fichs").append(
+                        `
+                        <div class="timeline-item">
+                            <h6 class="historial_list">${historial.last_quantity_added} Fichas agregadas.</h6>
+                            <small>${historial.register_date}</small>
+                        </div>
+                        `
+                    );
+                });
+                // Click HISTORIAL
+        $(".historial_list").on("click", function() {
+            $("#modal_detalles_corte").modal("show");
+        });
+            },error: function(xhr, status, error) {
+                console.error("Error en la petición weeee:", error);
+                console.log("Respuesta del servidor:", xhr.responseText);
+            }
+
+        });
 
     });
 
@@ -764,10 +879,11 @@
 
     // GUARDAR CANTIDAD DE FICHAS A AGREGAR
     $("#save_add_fichas").on("click", function() {
+        var id_cliente_history = $("#input_id_client").val();
         var id_plan_select_to_add = $("#plan_select_to_add_fichas").val();
         var cantidad_fichas_add = $("#cantidad_fichas_add").val();
         $.ajax({
-            url: "../resources/php/cortes_fichas_controller.php?id_plan_select_to_add=" + id_plan_select_to_add + "&cantidad_fichas_add=" + cantidad_fichas_add,
+            url: "../resources/php/cortes_fichas_controller.php?id_plan_select_to_add=" + id_plan_select_to_add + "&cantidad_fichas_add=" + cantidad_fichas_add+"&id_cliente_history="+id_cliente_history,
             type: "POST", // o POST
             dataType: "json", // esperamos JSON
             success: function(respuesta) {
@@ -775,9 +891,18 @@
 
                 $.each(respuesta.fich_disp, function(index, total) {
                     $(`#id_plan_${total.id_plan_fk}`).text(`${total.cantidad_total}`);
+                    $("#container_historial_fichs").append(
+                        `
+                        <div class="timeline-item">
+                            <h6 class="historial_list">${total.ult_cantidad_add} fichas agregadas.</h6>
+                            <small>${total.fecha_regis_cantidad}</small>
+                        </div>
+                        `
+                    );
                 });
 
                 $("#modal_addFichasOfTotal").modal("hide");
+                
             },
             error: function(xhr, status, error) {
                 console.error("Error en la petición weeee:", error);

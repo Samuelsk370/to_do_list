@@ -61,12 +61,19 @@ elseif (isset($_GET['id_cliente_consul_planes'])) {
 
     // 🔹 Consulta los planes
     $consulta_PlanesPV = $conexionBD->prepare("
-    SELECT * FROM plan_fichas WHERE id_cliente_pv_fk = :id_cliente_pv_fk
-");
+    SELECT * FROM plan_fichas WHERE id_cliente_pv_fk = :id_cliente_pv_fk");
     $consulta_PlanesPV->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
     $consulta_PlanesPV->execute();
     $planestPV_List = $consulta_PlanesPV->fetchAll(PDO::FETCH_ASSOC);
+    
+// 🔹 Consulta los historial de fichas addes del cliente
+//     $consulta_history_fichs = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_cliente_pv_fk = :id_cliente_pv_fk
+// ");
+//     $consulta_history_fichs->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
+//     $consulta_history_fichs->execute();
+//     $hist_client_fichs = $consulta_history_fichs->fetchAll(PDO::FETCH_ASSOC);
 
+// ______________________________________________________________________________________________
     // 🔹 Combina ambos arrays en una sola respuesta
     $respuesta = [
         "planes" => $planestPV_List
@@ -83,8 +90,9 @@ elseif (isset($_GET['id_plan_select_to_add'])) {
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-$id_plan_select_to_add = $_GET['id_plan_select_to_add'];
-$cantidad_fichas_add   = $_GET['cantidad_fichas_add'];
+$id_cliente_history = $_GET['id_cliente_history'];//var 0
+$id_plan_select_to_add = $_GET['id_plan_select_to_add'];//var 1
+$cantidad_fichas_add   = $_GET['cantidad_fichas_add'];//var 2
 
 // CONSULTAR FICHAS DISPONIBLES ACTUALES
 $consulta = $conexionBD->prepare("
@@ -99,14 +107,14 @@ $ficha = $consulta->fetch(PDO::FETCH_ASSOC);
 // CALCULAR VALORES
 if ($ficha) {
     // Si ya existe el registro, sumamos las fichas
-    $cantidad_total = $ficha['cantidad_total'];
-    $sumaTotalFichas = $cantidad_total + $cantidad_fichas_add;
+    $cantidad_total = $ficha['cantidad_total'];//var 3
+    $sumaTotalFichas = $cantidad_total + $cantidad_fichas_add;//var 4
 } else {
     // Si no existe, será un nuevo registro
-    $sumaTotalFichas = $cantidad_fichas_add;
+    $sumaTotalFichas = $cantidad_fichas_add;//var 4
 }
 
-$fecha_actual = (new DateTime("now", new DateTimeZone("America/Mexico_City")))
+$fecha_actual = (new DateTime("now", new DateTimeZone("America/Mexico_City")))//var 5
                 ->format("Y-m-d h:i:s a");
 
 if ($ficha) {
@@ -131,6 +139,16 @@ $query->bindParam(':ult_cantidad_add', $cantidad_fichas_add, PDO::PARAM_INT);
 $query->bindParam(':cantidad_total', $sumaTotalFichas, PDO::PARAM_INT);
 $query->bindParam(':fecha_regis_cantidad', $fecha_actual, PDO::PARAM_STR);
 $query->execute();
+
+
+// INSERTAR EN EL HISTORIAL DE FICHAS AGREGADAS
+$sql = "INSERT INTO historial_fichas_agregadas (id_fichs_add, last_quantity_added, register_date, id_plan_fk_history, id_client_history) VALUES(NULL, :last_quantity_added, :register_date, :id_plan_fk_history, :id_client_history)";
+    $save_history_fichs_added = $conexionBD->prepare($sql);
+    $save_history_fichs_added->bindParam(':last_quantity_added', $cantidad_fichas_add);
+    $save_history_fichs_added->bindParam(':register_date', $fecha_actual);
+    $save_history_fichs_added->bindParam(':id_plan_fk_history', $id_plan_select_to_add);
+    $save_history_fichs_added->bindParam(':id_client_history', $id_cliente_history);
+    $save_history_fichs_added->execute();
 
 // CONSULTAR DATOS ACTUALIZADOS / INSERTADOS
 $consulta = $conexionBD->prepare("
@@ -229,7 +247,28 @@ elseif (isset($_GET['idDelPlan'])) {
     echo json_encode($respuesta);
 
 
-}  else {
+} 
+elseif (isset($_GET['id_client_to_history'])) {
+    $id_client_to_history = $_GET['id_client_to_history'];
+    
+    $consulta = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_client_history = :id_client_history
+    ");
+    $consulta->bindParam(':id_client_history', $id_client_to_history);
+    $consulta->execute();
+
+    // Obtener los resultados
+    $fichsHistory = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+        $respuesta = [
+            "hitory_fichs" => $fichsHistory
+        ];
+
+    // Enviar JSON
+    header('Content-Type: application/json');
+    echo json_encode($respuesta);
+
+
+} else {
     $consulta = $conexionBD->prepare("SELECT * FROM `localidad`");
     $consulta->execute();
     $listaLocalidades = $consulta->fetchAll();
