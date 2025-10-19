@@ -176,7 +176,7 @@
                                 Nuevo Corte
                             </button>
                             <div class="border container rounded" style="margin-bottom:1rem; max-height: 300px; overflow-y: auto; overflow-x: hidden; position: relative;">
-                                <div class="timeline" id="">
+                                <div class="timeline" id="container_historial_corte">
 
                                 </div>
                             </div>
@@ -889,12 +889,23 @@ $(document).on("input change", "#porcent_of_corte", function() {
                 console.log("Respuesta del servidor:", respuesta);
                 
                     $("#container_historial_fichs").empty();
+                    $("#container_historial_corte").empty();
                 $.each(respuesta.hitory_fichs, function(index, historial) {
                     $("#container_historial_fichs").append(
                         `
                         <div class="timeline-item">
                             <h6 class="historial_list">${historial.last_quantity_added} Fichas agregadas.</h6>
                             <small>${historial.register_date}</small>
+                        </div>
+                        `
+                    );
+                });
+                $.each(respuesta.list_cortes, function(index, historial_corte) {
+                    $("#container_historial_corte").append(
+                        `
+                        <div class="timeline-item">
+                            <h6 class="historial_list">Corte By: ${historial_corte.id_empleado_cobro}.</h6>
+                            <small>${historial_corte.fecha_corte}</small>
                         </div>
                         `
                     );
@@ -1154,17 +1165,17 @@ $(document).on("input change", "#porcent_of_corte", function() {
     pdfMake.createPdf(docDefinition).getBlob(function(blob) {
     // Crear FormData para enviar
     let formData = new FormData();
-    // let id_client_pv = $("#id_client_form_corte").val();
-    // let total_bruto = $("#total_bruto").text();
-    // let porcentaje = $("#porcent_of_corte").val();
-    // let descuento_total = $("#total_descuento").text();
-    // let total_cobrar = $("#total_cobrar").text();
-    // let fecha_corte = FechaActualFormateda;
-    // let ruta_pdf_guardar ="/storage/pdf/tickets_cortes/";
     formData.append('pdf', blob, 'ticket.pdf'); // 'ticket.pdf' es el nombre inicial
-
+        // Agregar las demás variables
+    formData.append('total_bruto', totalBruto);
+    formData.append('total_descuento', totalDescuento);
+    formData.append('total_cobrar', totalCobrar);
+    formData.append('porcentaje', porcentaje);
+    formData.append('id_cliente', idCliente);
+    formData.append('nombre_cliente', nameClientePV);
+    formData.append('fecha_actual', FechaActualFormateda);
     // Enviar al servidor con fetch
-    fetch('guardar_ticket.php', {
+    fetch('../resources/php/guardar_ticket.php', {
         method: 'POST',
         body: formData
     })
@@ -1173,12 +1184,24 @@ $(document).on("input change", "#porcent_of_corte", function() {
         if (data.success) {
             console.log('PDF guardado en servidor:', data.path);
             // Aquí puedes guardar data.path en tu DB
+            $("#container_historial_corte").append(
+                `
+                <div class="timeline-item">
+                    <h6 class="historial_list">Corte By ${data.by_empleado}.</h6>
+                    <small>${data.fecha_actual}</small>
+                </div>
+                `
+            );
+            $(".historial_list").on("click", function() {
+            $("#modal_detalles_corte").modal("show");
+        });
         } else {
             console.error('Error al guardar PDF:', data.message);
         }
     })
     .catch(err => console.error(err));
-});
+    $("#modal_addCorte").modal("hide");
+    });
 
 
     // Si prefieres guardar directamente:
@@ -1188,7 +1211,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
 // Abrir pdf de la ruta relativa
   $("#verPdfBtn").on("click", function() {
   // Ruta o URL del PDF
-  let rutaPDF = "../storage/pdf/tickets_cortes/ticket_1760833855.pdf";
+  let rutaPDF = "../storage/pdf/tickets_cortes/ticket_1760840521.pdf";
 
   // Asignamos el PDF al iframe
   $("#pdfViewer").attr("src", rutaPDF);

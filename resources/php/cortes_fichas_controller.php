@@ -2,8 +2,6 @@
 
 <?php
 header('Content-Type: application/json; charset=utf-8');
-// Evitar que errores rompan el JSON
-// error_reporting(E_ERROR | E_PARSE); 
 include_once(__DIR__ . "/../../database/bd.php");
 $conexionBD = BD::crearInstancia();
 
@@ -272,16 +270,22 @@ elseif (isset($_GET['idDelPlan'])) {
 elseif (isset($_GET['id_client_to_history'])) {
     $id_client_to_history = $_GET['id_client_to_history'];
     
-    $consulta = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_client_history = :id_client_history
-    ");
+    $consulta = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_client_history = :id_client_history");
     $consulta->bindParam(':id_client_history', $id_client_to_history);
     $consulta->execute();
-
     // Obtener los resultados
     $fichsHistory = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
+    $get_historial_cortes = $conexionBD->prepare("SELECT * FROM cortes_fichas WHERE id_client_pv = :id_client_pv");
+    $get_historial_cortes->bindParam(':id_client_pv', $id_client_to_history);
+    $get_historial_cortes->execute();
+    // Obtener historial de cortes..
+    $list_cortes = $get_historial_cortes->fetchAll(PDO::FETCH_ASSOC);
+
+
         $respuesta = [
-            "hitory_fichs" => $fichsHistory
+            "hitory_fichs" => $fichsHistory,
+            "list_cortes" => $list_cortes
         ];
 
     // Enviar JSON
