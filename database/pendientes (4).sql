@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-10-2025 a las 01:06:09
+-- Tiempo de generación: 09-10-2025 a las 23:09:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -85,7 +85,8 @@ CREATE TABLE `cortes_fichas` (
   `id_corte_ficha` int(10) NOT NULL,
   `id_client_pv` int(10) NOT NULL,
   `fecha_corte` datetime NOT NULL,
-  `ticket_pdf` varchar(255) NOT NULL
+  `ticket_pdf` varchar(255) NOT NULL,
+  `id_empleado_cobro` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -120,7 +121,7 @@ INSERT INTO `empleados` (`id_empleado`, `name_empleado`, `apellidos_empleado`, `
 
 CREATE TABLE `fichas_disponibles` (
   `id_ficha_disponible` int(10) NOT NULL,
-  `ult_contidad_add` int(10) NOT NULL,
+  `ult_cantidad_add` int(10) NOT NULL,
   `cantidad_total` int(10) NOT NULL,
   `fecha_regis_cantidad` datetime NOT NULL,
   `id_plan_fk` int(10) NOT NULL
@@ -130,11 +131,50 @@ CREATE TABLE `fichas_disponibles` (
 -- Volcado de datos para la tabla `fichas_disponibles`
 --
 
-INSERT INTO `fichas_disponibles` (`id_ficha_disponible`, `ult_contidad_add`, `cantidad_total`, `fecha_regis_cantidad`, `id_plan_fk`) VALUES
-(1, 50, 10, '2025-10-05 18:56:00', 8),
-(2, 100, 200, '2025-10-05 19:02:43', 6),
-(3, 20, 120, '2025-10-05 23:59:03', 2),
-(4, 300, 300, '2025-10-06 00:54:42', 9);
+INSERT INTO `fichas_disponibles` (`id_ficha_disponible`, `ult_cantidad_add`, `cantidad_total`, `fecha_regis_cantidad`, `id_plan_fk`) VALUES
+(1, 20, 30, '2025-10-08 08:47:18', 8),
+(2, 1, 201, '2025-10-08 08:57:12', 6),
+(3, 1, 121, '2025-10-08 08:43:41', 2),
+(4, 300, 300, '2025-10-06 00:54:42', 9),
+(5, 1, 101, '2025-10-08 09:25:17', 3),
+(6, 2, 90, '2025-10-09 02:55:54', 1),
+(7, 100, 100, '2025-10-08 06:06:02', 4),
+(8, 107, 314, '2025-10-09 11:02:41', 10),
+(9, 10, 50, '2025-10-09 11:23:33', 12),
+(10, 200, 200, '2025-10-09 08:39:52', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `historial_fichas_agregadas`
+--
+
+CREATE TABLE `historial_fichas_agregadas` (
+  `id_fichs_add` int(10) NOT NULL,
+  `last_quantity_added` int(10) NOT NULL,
+  `register_date` datetime NOT NULL,
+  `id_plan_fk_history` int(10) NOT NULL,
+  `id_client_history` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `historial_fichas_agregadas`
+--
+
+INSERT INTO `historial_fichas_agregadas` (`id_fichs_add`, `last_quantity_added`, `register_date`, `id_plan_fk_history`, `id_client_history`) VALUES
+(2, 13, '2025-10-09 08:05:09', 12, 2),
+(3, 200, '2025-10-09 08:39:52', 5, 1),
+(4, 100, '2025-10-09 11:01:04', 10, 2),
+(5, 100, '2025-10-09 11:01:04', 10, 2),
+(6, 107, '2025-10-09 11:02:41', 10, 2),
+(7, 50, '2025-10-09 11:16:05', 1, 2),
+(8, 27, '2025-10-09 11:19:38', 12, 2),
+(9, 10, '2025-10-09 11:23:32', 12, 2),
+(10, 10, '2025-10-09 11:23:33', 12, 2),
+(11, 30, '2025-10-09 11:24:12', 1, 2),
+(12, 1, '2025-10-09 12:04:22', 1, 2),
+(13, 2, '2025-10-09 02:54:24', 1, 2),
+(14, 2, '2025-10-09 02:55:54', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -220,7 +260,8 @@ INSERT INTO `plan_fichas` (`id_plan_ficha`, `nombre_plan`, `precio_plan`, `id_cl
 (9, '2meses', 500.00, 2),
 (10, '2dias', 40.00, 2),
 (12, '10Horas', 60.00, 2),
-(13, '1hora', 5.00, 6);
+(13, '1hora', 5.00, 6),
+(14, '1hora', 10.00, 10);
 
 -- --------------------------------------------------------
 
@@ -264,7 +305,8 @@ ALTER TABLE `cliente_puntoventa`
 --
 ALTER TABLE `cortes_fichas`
   ADD PRIMARY KEY (`id_corte_ficha`),
-  ADD KEY `id_client_pv` (`id_client_pv`);
+  ADD KEY `id_client_pv` (`id_client_pv`),
+  ADD KEY `id_empleado_cobro` (`id_empleado_cobro`);
 
 --
 -- Indices de la tabla `empleados`
@@ -278,6 +320,14 @@ ALTER TABLE `empleados`
 ALTER TABLE `fichas_disponibles`
   ADD PRIMARY KEY (`id_ficha_disponible`),
   ADD KEY `id_plan_fk` (`id_plan_fk`);
+
+--
+-- Indices de la tabla `historial_fichas_agregadas`
+--
+ALTER TABLE `historial_fichas_agregadas`
+  ADD PRIMARY KEY (`id_fichs_add`),
+  ADD KEY `id_plan_fk_history` (`id_plan_fk_history`),
+  ADD KEY `id_client_history` (`id_client_history`);
 
 --
 -- Indices de la tabla `localidad`
@@ -333,7 +383,13 @@ ALTER TABLE `empleados`
 -- AUTO_INCREMENT de la tabla `fichas_disponibles`
 --
 ALTER TABLE `fichas_disponibles`
-  MODIFY `id_ficha_disponible` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_ficha_disponible` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `historial_fichas_agregadas`
+--
+ALTER TABLE `historial_fichas_agregadas`
+  MODIFY `id_fichs_add` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `localidad`
@@ -351,7 +407,7 @@ ALTER TABLE `pend_finalizados`
 -- AUTO_INCREMENT de la tabla `plan_fichas`
 --
 ALTER TABLE `plan_fichas`
-  MODIFY `id_plan_ficha` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_plan_ficha` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tareas_pendientes`
@@ -373,13 +429,21 @@ ALTER TABLE `cliente_puntoventa`
 -- Filtros para la tabla `cortes_fichas`
 --
 ALTER TABLE `cortes_fichas`
-  ADD CONSTRAINT `cortes_fichas_ibfk_1` FOREIGN KEY (`id_client_pv`) REFERENCES `cliente_puntoventa` (`id_client_pv`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `cortes_fichas_ibfk_1` FOREIGN KEY (`id_client_pv`) REFERENCES `cliente_puntoventa` (`id_client_pv`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cortes_fichas_ibfk_2` FOREIGN KEY (`id_empleado_cobro`) REFERENCES `empleados` (`id_empleado`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `fichas_disponibles`
 --
 ALTER TABLE `fichas_disponibles`
   ADD CONSTRAINT `fichas_disponibles_ibfk_1` FOREIGN KEY (`id_plan_fk`) REFERENCES `plan_fichas` (`id_plan_ficha`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `historial_fichas_agregadas`
+--
+ALTER TABLE `historial_fichas_agregadas`
+  ADD CONSTRAINT `historial_fichas_agregadas_ibfk_1` FOREIGN KEY (`id_plan_fk_history`) REFERENCES `plan_fichas` (`id_plan_ficha`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `historial_fichas_agregadas_ibfk_2` FOREIGN KEY (`id_client_history`) REFERENCES `cliente_puntoventa` (`id_client_pv`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `pend_finalizados`

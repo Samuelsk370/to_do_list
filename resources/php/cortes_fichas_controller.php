@@ -59,12 +59,33 @@ elseif (isset($_GET['id_cliente_consul_planes'])) {
 
     $id_cliente_consul_planes = $_GET['id_cliente_consul_planes'];
 
-    // 🔹 Consulta los planes
+
     $consulta_PlanesPV = $conexionBD->prepare("
-    SELECT * FROM plan_fichas WHERE id_cliente_pv_fk = :id_cliente_pv_fk");
+        SELECT 
+            plan_fichas.id_plan_ficha,
+            plan_fichas.nombre_plan,
+            plan_fichas.precio_plan,
+            plan_fichas.id_cliente_pv_fk,
+            fichas_disponibles.cantidad_total,
+            fichas_disponibles.fecha_regis_cantidad
+        FROM plan_fichas
+        INNER JOIN fichas_disponibles 
+            ON fichas_disponibles.id_plan_fk = plan_fichas.id_plan_ficha
+        WHERE plan_fichas.id_cliente_pv_fk = :id_cliente_pv_fk
+    ");
     $consulta_PlanesPV->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
     $consulta_PlanesPV->execute();
     $planestPV_List = $consulta_PlanesPV->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+
+    // // 🔹 Consulta los planes
+    // $consulta_PlanesPV = $conexionBD->prepare("
+    // SELECT * FROM plan_fichas WHERE id_cliente_pv_fk = :id_cliente_pv_fk");
+    // $consulta_PlanesPV->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
+    // $consulta_PlanesPV->execute();
+    // $planestPV_List = $consulta_PlanesPV->fetchAll(PDO::FETCH_ASSOC);
     
 // 🔹 Consulta los historial de fichas addes del cliente
 //     $consulta_history_fichs = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_cliente_pv_fk = :id_cliente_pv_fk
