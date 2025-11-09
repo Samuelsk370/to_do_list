@@ -211,7 +211,7 @@
       </div>
       <div class="modal-body p-0" style="height: 80vh;">
         <!-- Aquí se mostrará el PDF -->
-        <iframe id="pdfViewer" src="" width="100%" height="100%" style="border:none;"></iframe>
+        <iframe id="pdfViewer" width="100%" height="100%" style="border:none;"></iframe>
       </div>
     </div>
   </div>
@@ -243,7 +243,7 @@
 
                 <div class="mb-3">
                     <p class="fw-bold mb-1">Porcentaje aplicado:</p>
-                    <p id="porcent_aplicado_history" class="text-muted"></p>%
+                    <p id="porcent_aplicado_history" class="text-muted"></p>
                 </div>
 
                 <div class="mb-3">
@@ -254,7 +254,7 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <p class="fw-bold mb-1">Total cobrado:</p>
-                        <span id="total_cobrado_history" class="badge text-white"></span>
+                        <span id="total_cobrado_history" class="badge text-muted"></span>
                     </div>
 
                     <div class="col-md-6 text-md-end">
@@ -513,6 +513,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
         let precio = parseFloat($(this).data("precio_plan")) || 0; // valor del atributo data-precio_plan
         let max = parseInt($(this).data("cantidad_max_add"));
         totalEnVentas += valorPorcentaje * precio; // sumar subtotal de cada input
+        // AQUI QUEDE. VIENDO La forma de obtener el resto entre valor de fichas vendidas y total de fichas disponibles
         if (valorPorcentaje > max) {
             $(this).val(max); // fuerza el valorPorcentaje máximo
         } else if (valorPorcentaje < 0) {
@@ -645,11 +646,12 @@ $(document).on("input change", "#porcent_of_corte", function() {
             // obtener el valor seleccionado
             let valor = $(this).val();
             // alert(valor);
-            $.ajax({
-                url: "../resources/php/cortes_fichas_controller.php?id_pueblo=" + valor, // archivo PHP que consulta MySQL
+            $.ajax({                url: "../resources/php/cortes_fichas_controller.php?id_pueblo=" + valor, // archivo PHP que consulta MySQL
                 type: "POST", // o POST
                 dataType: "json", // esperamos JSON
-                success: function(pv) {
+                success: function(pv, textStatus, xhr) {
+                    console.log("RAW response:", xhr.responseText); // ✅ ver exactamente qué llega
+                    console.log("Parsed JSON:", pv);
                     // Llenamos el select
                     $("#id_client_corte").empty();
                     $("#id_client_corte").append('<option disabled selected>Cliente</option>');
@@ -676,6 +678,10 @@ $(document).on("input change", "#porcent_of_corte", function() {
     });
     // Click HISTORIAL
         $(".historial_list").on("click", function() {
+            var path_ticket = String($(this).data("ticket_pdf"));
+                console.log("pathhhh:: "+path_ticket);
+
+            $("#pdfViewer").attr("src", path_ticket);
             $("#modal_detalles_corte").modal("show");
         });
 
@@ -703,7 +709,56 @@ $(document).on("input change", "#porcent_of_corte", function() {
     });
 
     // AL CAMBIAR OPCIÓN DE CLIENTE PUNTO de VENTA:
-    $("#id_client_corte").change(function() {
+    $("#id_client_corte").change(function() { 
+        // Crear un arreglo para almacenar todos los planes
+        let planes = [];
+        // Recorremos todos los inputs del modal
+        $(".input_total_fichs_sold").each(function() {
+            const idPlan = $(this).data("id_plan_ficha");
+            const cantidadVendida = parseInt($(this).val()) || 0;
+            const cantidadMax = parseInt($(this).data("cantidad_max_add")) || 0;
+            const precio = parseFloat($(this).data("precio_plan")) || 0;
+
+            // Solo agregar si se vendió algo (evitar enviar ceros)
+            if (cantidadVendida > 0) {
+                planes.push({
+                    id_plan_fk: idPlan,
+                    cantidad_vendida: cantidadVendida,
+                    cantidad_maxima: cantidadMax,
+                    precio: precio
+                });
+            }
+        });
+         // Si no hay planes con ventas, detener el proceso
+    // if (planes.length === 0) {
+    //     alert("No hay fichas vendidas registradas.");
+    //     return;
+    // } 
+
+    // console.log("Planes recopilados:", planes);
+
+    // $.ajax({
+    //     url: "../resources/php/cortes_fichas_controller.php",
+    //     type: "POST",
+    //     dataType: "json",
+    //     data: { planes: JSON.stringify(planes) },
+    //     success: function(respuesta) {
+    //         console.log("Respuesta del servidor:", respuesta);
+    //         alert("Fichas actualizadas correctamente.");
+    //     },
+    //     error: function() {
+    //         alert("Error al actualizar las fichas.");
+    //     }
+    // });
+
+
+
+
+
+
+
+
+        // ______________________________________________________________________________________________________________-
         // obtener el valor seleccionado
         let id_cliente_consul_planes = $(this).val();
         let nombre_clientPv = $("#id_client_corte option:selected").text();
@@ -714,15 +769,15 @@ $(document).on("input change", "#porcent_of_corte", function() {
             success: function(respuesta) {
                     // Limpiar contenedores
                     $("#container_planesPV").empty();
-                    $("#plan_select_to_add_fichas").empty();
                     $("#container_fichasTotalesPV").empty();
-                    $("#containerListPlanesModal").empty();
+                    $("#plan_select_to_add_fichas").empty();//select del modal ( Lado de Agregar fichas)
+                    $("#containerListPlanesModal").empty();//Contenedor Lista Planes en el Modal (Lado de Nuevo corte) 
                     console.log(respuesta);
                     console.log(respuesta.planes);
                     console.log(respuesta.fichas);
                     // 🔹 Acceder a los planes
                     $counterPlanes =1;
-                    $.each(respuesta.planes, function(fichas, plan) {
+                    $.each(respuesta.planes, function(fichas, plan) { 
                         $("#container_planesPV").append(
                             `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">
                             ${plan.nombre_plan} - ${plan.precio_plan}
@@ -768,6 +823,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                                 value="0" 
                                 type="number" 
                                 style="width: 100px;"
+                                data-id_plan_ficha="${plan.id_plan_ficha}"
                                 data-precio_plan="${plan.precio_plan}"
                                 data-cantidad_max_add="${plan.cantidad_total}"
                                 max="${plan.cantidad_total}"
@@ -886,6 +942,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
             type: "POST", // o POST
             dataType: "json", // esperamos JSON
             success: function(respuesta) {
+                console.log("Respuesta completa:", respuesta); // Verás el HTML o el mensaje real del error
                 console.log("Respuesta del servidor:", respuesta);
                 
                     $("#container_historial_fichs").empty();
@@ -894,7 +951,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                     $("#container_historial_fichs").append(
                         `
                         <div class="timeline-item">
-                            <h6 class="historial_list">${historial.last_quantity_added} Fichas agregadas.</h6>
+                            <h6 class="historial_list lista_corte">${historial.last_quantity_added} Fichas agregadas.</h6>
                             <small>${historial.register_date}</small>
                         </div>
                         `
@@ -903,17 +960,48 @@ $(document).on("input change", "#porcent_of_corte", function() {
                 $.each(respuesta.list_cortes, function(index, historial_corte) {
                     $("#container_historial_corte").append(
                         `
-                        <div class="timeline-item">
-                            <h6 class="historial_list">Corte By: ${historial_corte.id_empleado_cobro}.</h6>
+                        <div class="timeline-item ">
+                            <h6
+                            data-id_corte_ficha="${historial_corte.id_corte_ficha}"
+                            data-id_client_pv="${historial_corte.id_client_pv}"
+                            data-total_bruto="${historial_corte.total_bruto}"
+                            data-porcentaje="${historial_corte.porcentaje}"
+                            data-descuento_total="${historial_corte.descuento_total}"
+                            data-total_cobrado="${historial_corte.total_cobrado}"
+                            data-fecha_corte="${historial_corte.fecha_corte}"
+                            data-ticket_pdf="${historial_corte.ticket_pdf}"
+                            data-id_empleado_cobro ="${historial_corte.id_empleado_cobro }"
+                            data-name_empleado="${historial_corte.name_empleado}"
+                            data-apellidos_empleado="${historial_corte.apellidos_empleado}"
+                            class="historial_list lista_corte">By: ${historial_corte.name_empleado} ${historial_corte.apellidos_empleado}.</h6>
                             <small>${historial_corte.fecha_corte}</small>
                         </div>
                         `
                     );
                 });
                 // Click HISTORIAL
-        $(".historial_list").on("click", function() {
-            $("#modal_detalles_corte").modal("show");
-        });
+                $(".lista_corte").on("click", function() {
+                    let idRegisCorte = $(this).data("id_corte_ficha");
+                    let id_client_pv = $(this).data("id_client_pv");
+                    let total_bruto = $(this).data("total_bruto");
+                    let porcentaje = $(this).data("porcentaje");
+                    let descuento_total = $(this).data("descuento_total");
+                    let total_cobrado = $(this).data("total_cobrado");
+                    let fecha_corte = $(this).data("fecha_corte");
+                    let ticket_pdf = $(this).data("ticket_pdf");
+                    let id_empleado_cobro = $(this).data("id_empleado_cobro");
+                    let name_empleado = $(this).data("name_empleado");
+                    let apellidos_empleado = $(this).data("apellidos_empleado");
+
+                    $("#name_client_modal_history").text(name_empleado+" "+apellidos_empleado);
+                    $("#total_bruto_history").text("$"+total_bruto);
+                    $("#porcent_aplicado_history").text(porcentaje+"%");
+                    $("#descuento_history").text("$"+descuento_total);
+                    $("#total_cobrado_history").text("$"+total_cobrado);
+                    $("#fecha_corte_history").text(fecha_corte);
+                    $("#pdfViewer").attr("src", ticket_pdf);//Agregar el path del PDF, en el modal visualizador
+                    $("#modal_detalles_corte").modal("show");
+                });
             },error: function(xhr, status, error) {
                 console.error("Error en la petición weeee:", error);
                 console.log("Respuesta del servidor:", xhr.responseText);
@@ -1026,8 +1114,10 @@ $(document).on("input change", "#porcent_of_corte", function() {
 
     // aqui me qude: HACIENDO QUE LOS IMPUT DE CANTIDAD VENDIDA TENGAN UN VALOR MAXIMO PARA INGRESAR..
     // GUARDAR NUEVO CORTE 
-    $("#save_new_corte").on("click", function() { 
-        // --- Datos generales ---
+    $("#save_new_corte").on("click", function() {
+    // Crear un arreglo para almacenar todos los planes
+    var planes2 = []; 
+    // --- Datos generales para crear pdf---
     const totalBruto = $('#total_bruto').text();
     const totalDescuento = $('#total_descuento').text();
     const totalCobrar = $('#total_cobrar').text();
@@ -1193,31 +1283,31 @@ $(document).on("input change", "#porcent_of_corte", function() {
                 `
             );
             $(".historial_list").on("click", function() {
-            $("#modal_detalles_corte").modal("show");
-        });
+                var path_ticket = String($(this).data("ticket_pdf"));
+                console.log("pathhhh:: "+path_ticket);
+                $("#pdfViewer").attr("src", path_ticket);
+                $("#modal_detalles_corte").modal("show");
+            });
         } else {
             console.error('Error al guardar PDF:', data.message);
         }
-    })
+    })//_________________________________________________________________________________________________________________________
     .catch(err => console.error(err));
     $("#modal_addCorte").modal("hide");
     });
 
-
-    // Si prefieres guardar directamente:
-    // pdfMake.createPdf(docDefinition).download('ticket.pdf');
-  });
+  });// llave de cierre de $("#save_new_corte")
 
 // Abrir pdf de la ruta relativa
-  $("#verPdfBtn").on("click", function() {
-  // Ruta o URL del PDF
-  let rutaPDF = "../storage/pdf/tickets_cortes/ticket_1760840521.pdf";
+$("#verPdfBtn").on("click", function() {
+    // Ruta o URL del PDF
+    // let rutaPDF = "../storage/pdf/tickets_cortes/ticket_1760840521.pdf";
 
-  // Asignamos el PDF al iframe
-  $("#pdfViewer").attr("src", rutaPDF);
+    // Asignamos el PDF al iframe
+    
 
-  // Mostramos el modal
-  $("#pdfModal").modal("show");
+    // Mostramos el modal
+    $("#pdfModal").modal("show");
 });
 
 

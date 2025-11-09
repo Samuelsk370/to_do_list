@@ -29,7 +29,8 @@ if (isset($_FILES['pdf']) && $_FILES['pdf']['error'] === 0) {
     }
 
     $fileName = 'ticket_' . time() . '.pdf';
-    $filePath = $uploadDir . $fileName;
+    $filePath = $uploadDir . $fileName;//Ruta para guardar pdf en local
+    $filePathToBD = '../storage/pdf/tickets_cortes/' . $fileName;//Ruta para guardar pdf en BD
 
     if (move_uploaded_file($_FILES['pdf']['tmp_name'], $filePath)) {
 
@@ -63,13 +64,13 @@ if (isset($_FILES['pdf']) && $_FILES['pdf']['error'] === 0) {
             $save_datasOfCorte->bindParam(':descuento_total', $total_descuento);
             $save_datasOfCorte->bindParam(':total_cobrado', $total_cobrar);
             $save_datasOfCorte->bindParam(':fecha_corte', $fecha_actual);
-            $save_datasOfCorte->bindParam(':ticket_pdf', $filePath);
+            $save_datasOfCorte->bindParam(':ticket_pdf', $filePathToBD);
             $save_datasOfCorte->bindParam(':id_empleado_cobro', $id_empleado_cobro);
             $save_datasOfCorte->execute();
 
             $response = [
                 'success' => true,
-                'path' => $filePath,
+                'path' => $filePathToBD,
                 'fecha_actual' => $fecha_actual,
                 'by_empleado' => 'Samuel CM',
                 'message' => 'Datos guardados correctamente'
