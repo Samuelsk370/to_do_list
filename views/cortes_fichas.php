@@ -1112,11 +1112,9 @@ $(document).on("input change", "#porcent_of_corte", function() {
     });
 
 
-    // aqui me qude: HACIENDO QUE LOS IMPUT DE CANTIDAD VENDIDA TENGAN UN VALOR MAXIMO PARA INGRESAR..
     // GUARDAR NUEVO CORTE 
     $("#save_new_corte").on("click", function() {
-    // Crear un arreglo para almacenar todos los planes
-    var planes2 = []; 
+    
     // --- Datos generales para crear pdf---
     const totalBruto = $('#total_bruto').text();
     const totalDescuento = $('#total_descuento').text();
@@ -1294,6 +1292,46 @@ $(document).on("input change", "#porcent_of_corte", function() {
     })//_________________________________________________________________________________________________________________________
     .catch(err => console.error(err));
     $("#modal_addCorte").modal("hide");
+    });
+
+    // Crear un arreglo para almacenar todos los planes
+    var planes2 = []; 
+    // Recorremos todos los inputs del modal
+    $(".input_total_fichs_sold").each(function() {
+        const idPlan_ = $(this).data("id_plan_ficha");
+        const cantidadVendida_ = parseInt($(this).val()) || 0;
+        const cantidadMax_ = parseInt($(this).data("cantidad_max_add")) || 0;
+        const _precio_ = parseFloat($(this).data("precio_plan")) || 0;
+
+        // Solo agregar si se vendió algo (evitar enviar ceros)
+        if (cantidadVendida_ > 0) {
+            planes2.push({
+                id_plan_fk: idPlan_,
+                cantidad_vendida: cantidadVendida_,
+                cantidad_maxima: cantidadMax_,
+                precio: _precio_
+            });
+        }
+    });
+    // Si no hay planes con ventas, detener el proceso
+    if (planes2.length === 0) {
+        alert("No hay fichas vendidas registradas.");
+        return;
+    }
+    console.log("Planes recopilados:", planes2);
+    // Enviar al servidor para actualizar
+    $.ajax({
+        url: "../resources/php/cortes_fichas_controller.php",
+        type: "POST",
+        dataType: "json",
+        data: { planes2: JSON.stringify(planes2) },
+        success: function(respuesta2) {
+            console.log("Respuesta del servidor:", respuesta2);
+            alert("Fichas actualizadas correctamente.");
+        },
+        error: function() {
+            alert("Error al actualizar las fichas.");
+        }
     });
 
   });// llave de cierre de $("#save_new_corte")

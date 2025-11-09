@@ -293,7 +293,61 @@ elseif (isset($_GET['id_client_to_history'])) {
     echo json_encode($respuesta);
 
 
-} else {
+}
+elseif (isset($_POST['planes2'])) {
+    $planes2 = json_decode($_POST['planes2'], true);
+    $resultados = [];
+
+    foreach ($planes2 as $plan) {
+        $id_plan_fk = $plan['id_plan_fk'];
+        $cantidad_vendida = $plan['cantidad_vendida'];
+
+        // 1️⃣ Obtener cantidad actual
+        $consulta = $conexionBD->prepare("SELECT cantidad_total FROM fichas_disponibles WHERE id_plan_fk = :id");
+        $consulta->bindParam(':id', $id_plan_fk);
+        $consulta->execute();
+        $fila = $consulta->fetch(PDO::FETCH_ASSOC);
+
+        if ($fila) {
+            $cantidad_actual = $fila['cantidad_total'];
+            $nueva_cantidad = max(0, $cantidad_actual - $cantidad_vendida); // evitar valores negativos
+
+            // 2️⃣ Actualizar cantidad_total
+            $actualizar = $conexionBD->prepare("
+                UPDATE fichas_disponibles 
+                SET cantidad_total = :nueva_cantidad 
+                WHERE id_plan_fk = :id
+            ");
+            $actualizar->bindParam(':nueva_cantidad', $nueva_cantidad);
+            $actualizar->bindParam(':id', $id_plan_fk);
+
+            if ($actualizar->execute()) {
+                $resultados[] = [
+                    "id_plan_fk" => $id_plan_fk,
+                    "cantidad_anterior" => $cantidad_actual,
+                    "vendidas" => $cantidad_vendida,
+                    "nueva_cantidad" => $nueva_cantidad,
+                    "status" => "ok"
+                ];
+            } else {
+                $resultados[] = [
+                    "id_plan_fk" => $id_plan_fk,
+                    "status" => "error",
+                    "mensaje" => "No se pudo actualizar"
+                ];
+            }
+        } else {
+            $resultados[] = [
+                "id_plan_fk" => $id_plan_fk,
+                "status" => "error",
+                "mensaje" => "Plan no encontrado"
+            ];
+        }
+    }
+
+    echo json_encode($resultados);
+}
+else {
     $consulta = $conexionBD->prepare("SELECT * FROM `localidad`");
     $consulta->execute();
     $listaLocalidades = $consulta->fetchAll();
