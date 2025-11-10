@@ -1,17 +1,24 @@
 
 <?php
+session_start();
 $urlBase = "http://localhost/to_do_list/"; //AQUÍ EN LUGAR DE "localhost" SE DEBE COLOCAR EL SERVIDOR DONDE SE SUBIRA EL PROYECT
+
+if (!isset($_SESSION["user_login"])) {
+    echo"<script type='text/javascript'>
+            window.location.href = '{$urlBase}views/login.php';
+        </script>";
+     die();
+}
 ?>
 <!doctype html>
 <html lang="es">
 
 <head>
-    <title>Title</title>
+    <title>StarnetSI</title>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <link rel="icon" href="<?php echo $urlBase;?>storage/img/ico_starnet.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <!-- Bootstrap CSS v5.2.1 -->
@@ -80,7 +87,7 @@ $urlBase = "http://localhost/to_do_list/"; //AQUÍ EN LUGAR DE "localhost" SE DE
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="#">
-            <img width="65" height="50" src="http://localhost/to_do_list/storage/img/logoStarnet.png">
+            <img width="70" height="70" style="border-radius: 50%;" src="http://localhost/to_do_list/storage/img/logoStarnet.png">
         </a>
 
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" 
@@ -93,29 +100,43 @@ $urlBase = "http://localhost/to_do_list/"; //AQUÍ EN LUGAR DE "localhost" SE DE
             <ul class="navbar-nav me-auto mt-2 mt-lg-0">
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>" 
-                       href="<?php echo $urlBase;?>index.php">INICIO</a>
+                       href="<?php echo $urlBase;?>index.php"><i class="bi bi-house-fill fs-5"></i> INICIO</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'pendientes.php') ? 'active' : ''; ?>" 
-                       href="<?php echo $urlBase;?>views/pendientes.php">Pendientes</a>
+                       href="<?php echo $urlBase;?>views/pendientes.php"><i class="bi bi-ui-checks fs-5"></i> PENDIENTES</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'localidades.php') ? 'active' : ''; ?>" 
-                       href="<?php echo $urlBase;?>views/localidades.php">Localidades</a>
+                       href="<?php echo $urlBase;?>views/localidades.php"><i class="bi bi-geo-alt-fill fs-5"></i> LOCALIDADES</a>
                 </li>
+                 <?php
+                    if (isset($_SESSION["tipoPuestoEmpleado"]) && 
+                    ($_SESSION["tipoPuestoEmpleado"] == "Lider")):
+                ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'empleados.php') ? 'active' : ''; ?>" 
-                       href="<?php echo $urlBase;?>views/empleados.php">Empleados</a>
+                       href="<?php echo $urlBase;?>views/empleados.php"><i class="bi bi-people-fill fs-5"></i> EQUIPO</a>
                 </li>
+                <?php endif; ?>
+                
+                <?php
+                    if (isset($_SESSION["tipoPuestoEmpleado"]) && 
+                    ($_SESSION["tipoPuestoEmpleado"] == "Lider" || $_SESSION["tipoPuestoEmpleado"] == "Gerente de Cobranza")):
+                ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'cortes_fichas.php') ? 'active' : ''; ?>" 
-                       href="<?php echo $urlBase;?>views/cortes_fichas.php">Cortes_fichas</a>
+                       href="<?php echo $urlBase;?>views/cortes_fichas.php"><i class="bi bi-cash-coin fs-5"></i> CORTE FICHAS</a>
                 </li>
+                <?php endif; ?>
                 
                 <li>
-                    <a class="nav-link" href="<?php echo $urlBase;?>resources/php/logout.php">Salir</a>
+                    <a class="nav-link" href="<?php echo $urlBase;?>resources/php/logout.php"><i class="bi bi-person-walking fs-5"></i> Salir</a>
                 </li>
             </ul>
+            <div class="cont_perfil_user">
+                <i class="bi bi-person-circle fs-2"></i> <?php echo $_SESSION['fullNameEmpleado'] ?>
+            </div>
         </div>
     </div>
 </nav>

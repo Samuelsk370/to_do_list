@@ -1,6 +1,6 @@
 <br>
 <footer class="bg-dark text-white text-center p-3">
-        <p class="mb-0">&copy; 2025 Starnet. Todos los derechos reservados.</p>
+        <p class="mb-0">&copy; 2025 Starnet S. I.</p>
     </footer>
 
      <!-- Bootstrap JavaScript Libraries -->

@@ -1,5 +1,44 @@
+
+<?php
+session_start();
+$urlBase = "http://localhost/to_do_list/"; //AQUÍ EN LUGAR DE "localhost" SE DEBE COLOCAR EL SERVIDOR DONDE SE SUBIRA EL PROYECT
+
+include_once("../database/bd.php");
+$conexionBD = BD::crearInstancia();
+
+if ($_POST) {
+     $mensaje = "Usuario o contraseña incorrecto";
+
+     $nickName = (isset($_POST['user_login'])?$_POST['user_login']:"");
+     $passWord = (isset($_POST['Passw_login'])?$_POST['Passw_login']:"");
+
+    $consultaLogin = $conexionBD->prepare("SELECT * FROM empleados WHERE name_user = :name_user && passw_user = :passw_user");
+    $consultaLogin->bindParam(':name_user', $nickName);
+    $consultaLogin->bindParam(':passw_user', $passWord);
+    $consultaLogin->execute();
+    $rowlogin = $consultaLogin->fetch(PDO::FETCH_ASSOC);
+    
+
+    if ($rowlogin) {
+        $id_empleado = $rowlogin['id_empleado'];
+        $name_empleado = $rowlogin['name_empleado'];
+        $apellidos = $rowlogin['apellidos_empleado'];
+        $tipo_puesto = $rowlogin['tipo_puesto'];
+
+        $_SESSION["id_empleado_logued"]=$id_empleado;
+        $_SESSION["user_login"]=$_POST["user_login"];
+        $_SESSION["fullNameEmpleado"]=$name_empleado.' '.$apellidos;
+        $_SESSION["tipoPuestoEmpleado"]=$tipo_puesto;
+        echo"<script type='text/javascript'>
+            window.location.href = '{$urlBase}index.php';
+        </script>";
+        die();
+        // header('Location:../index.php');
+    }
+}
+?>
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <title>Iniciar Sesión</title>
@@ -8,7 +47,7 @@
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
+    <link rel="icon" href="../storage/img/ico_starnet.ico">
     <!-- Bootstrap CSS v5.2.1 -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -29,11 +68,18 @@
                 <div class="col-4">
                 </div>
                 <div class="col-4">
-                    <form action="../resources/php/auth_login.php" method="post">
+                    <form action="#" method="post">
 
                         <div class="card">
                             <div class="card-header">Iniciar sesión</div>
                                 <div class="card-body">
+                                    <?php 
+                                        if(isset($mensaje)){?>
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong><?php echo $mensaje; ?></strong>
+                                        </div>
+                                    <?php } ?>
+                                    
                                     
                                 <div class="mb-3">
                                     <label for="" class="form-label">Usuario</label>

@@ -12,7 +12,7 @@
                                 <div class="col-md-3">
                                         <form action="" method="post">
                                                 <div class="card">
-                                                        <div class="card-header"> Pendiente </div>
+                                                        <div class="card-header"> Formulario de Registro </div>
                                                         <div class="card-body">
                                                                 <div hidden class="mb-3">
                                                                         <label for="" class="form-label">ID</label>

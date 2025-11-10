@@ -12,7 +12,7 @@
                                         <form action="" method="post" id="form_localidad">
                                                 <div class="card">
                                                         <div class="card-header">
-                                                                Empleado
+                                                                Formulario de Registro
                                                         </div>
                                                         <div class="card-body">
                                                                 <div hidden class="mb-3">

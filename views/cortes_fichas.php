@@ -80,8 +80,6 @@
 </style>
 <?php include("header.php"); ?>
 
-
-<a href="./test.php">ir___</a>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -89,7 +87,7 @@
                 <div class="col-md-4 mb-3">
                     <div class="card">
                         <div class="card-header">
-                            Corte de la localidad:
+                            Selecciona tus opciones
                         </div>
                         <div class="card-body">
                             <div hidden class="mb-3">
@@ -107,7 +105,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="" class="form-label">Localidad</label>
+                                <label for="" class="form-label fw-bold text-secondary"><i class="bi bi-buildings fs-4 text-primary"></i> Localidad</label>
                                 <select
                                     class="form-select form-select-lg "
                                     name="id_locality_corte"
@@ -117,7 +115,7 @@
 
 
                             <div hidden class="row mb-3" id="conatiner_formClientPV">
-                                <label for="" class="form-label">Punto de Venta</label>
+                                <label for="" class="form-label fw-bold text-secondary"><i class="bi bi-broadcast-pin fs-4 text-primary"></i> Punto de Venta</label>
                                 <div class="col-9">
 
                                     <select
@@ -127,25 +125,25 @@
                                     </select>
                                 </div>
                                 <div class="col-3 d-flex justify-content-center align-items-center">
-                                    <button id="btn_add_client_pv" class="btn btn-outline-secondary" type="button" id="">
-                                        <i class="bi bi-plus-square"></i>
+                                    <button id="btn_add_client_pv" class="btn btn-outline-primary" type="button" id="">
+                                        <i class="bi bi-plus-square fs-5"></i>
                                     </button>
                                 </div>
                             </div>
 
 
                             <div hidden class="row mb-3 border mx-2 rounded" id="conatiner_formPlanesPV">
-                                <label for="passw_user" class="form-label">Planes de fichas</label>
+                                <label for="passw_user" class="form-label fw-bold text-secondary">Planes de fichas <i class="bi bi-tags text-primary fs-5"></i></label>
                                 <div class="col-8" id="container_planesPV"></div>
                                 <div class="col-4 d-flex justify-content-center align-items-center">
-                                    <button class="btn btn-outline-secondary m-auto d-block " type="button" id="btn_add_plan_pv">
-                                        <i class="bi bi-plus-square"></i>
+                                    <button class="btn btn-outline-primary m-auto d-block " type="button" id="btn_add_plan_pv">
+                                        <i class="bi bi-plus-square fs-6"></i>
                                     </button>
 
                                 </div>
                             </div>
                             <div hidden class="row mb-3 border mx-2 rounded" id="conatiner_formTotalFichasPV">
-                                <label class="form-label">Total de fichas (actualmente)</label>
+                                <label class="form-label fw-bold text-secondary">Total fichas <i class="bi bi-pin-angle text-primary fs-4"></i></label>
                                 <div class="col-12" id="container_fichasTotalesPV">
 
                                     <p class="mb-1"><b>200</b> fichas de <b>$5.00</b></p>
@@ -165,7 +163,6 @@
                         <!-- <div class="text-center">
                                                 <h4>Historial</h4>
                                             </div> -->
-                        <span>zempazulco</span>
 
 
                         <div class="col-md-6">
@@ -173,6 +170,7 @@
                                 id="btn_add_corte_modal"
                                 type="button"
                                 class="btn btn-primary btn-sm m-2">
+                                <i class="bi bi-cash-coin fs-5"></i>
                                 Nuevo Corte
                             </button>
                             <div class="border container rounded" style="margin-bottom:1rem; max-height: 300px; overflow-y: auto; overflow-x: hidden; position: relative;">
@@ -183,7 +181,7 @@
 
                         </div>
                         <div class="col-md-6">
-                            <button id="btn_add_fichas" type="button" class="btn btn-primary btn-sm m-2"> Agregar Fichas </button>
+                            <button id="btn_add_fichas" type="button" class="btn btn-primary btn-sm m-2"><i class="bi bi-clipboard2-plus fs-5"></i> Agregar Fichas </button>
                             <div class="border container rounded" style="margin-bottom:1rem; max-height: 300px; overflow-y: auto; overflow-x: hidden; position: relative;">
                                 <div class="timeline" id="container_historial_fichs">
                                     
@@ -254,7 +252,7 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <p class="fw-bold mb-1">Total cobrado:</p>
-                        <span id="total_cobrado_history" class="badge text-muted"></span>
+                        <p id="total_cobrado_history" class="text-muted"></p>
                     </div>
 
                     <div class="col-md-6 text-md-end">
@@ -268,7 +266,7 @@
             <!-- Footer -->
             <div class="modal-footer">
                 <!-- <button type="submit" name="accion" value="Finalizar" class="btn btn-success">Finalizar</button> -->
-                <button type="button" id="verPdfBtn" class="btn btn-success" data-bs-dismiss="modal">Ver ticket</button>
+                <button type="button" id="verPdfBtn" class="btn btn-outline-danger" data-bs-dismiss="modal"><i class="bi bi-filetype-pdf fs-5"></i> Ver ticket</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
 
 
@@ -430,8 +428,8 @@
 
                 <!-- Footer -->
                 <div class="modal-footer">
-                    <button type="button" id="save_add_fichas" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="save_add_fichas" class="btn btn-primary"><i class="bi bi-floppy fs-5"></i> Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg fs-5"></i> Cerrar</button>
                 </div>
 
             </div>
@@ -466,8 +464,8 @@
                 
                 <!-- Footer -->
                 <div class="modal-footer">
-                    <button type="button" id="save_new_corte" class="btn btn-primary">Finalizar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="save_new_corte" class="btn btn-primary"><i class="bi bi-check-lg fs-5"></i>Finalizar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg fs-5"></i> Cerrar</button>
                 </div>
 
             </div>
@@ -780,12 +778,12 @@ $(document).on("input change", "#porcent_of_corte", function() {
                     $.each(respuesta.planes, function(fichas, plan) { 
                         $("#container_planesPV").append(
                             `<p class="fw-semibold bg-opacity-25 bg-primary text-dark px-1 rounded mb-2">
-                            ${plan.nombre_plan} - ${plan.precio_plan}
+                            ${plan.nombre_plan} - $${plan.precio_plan}
                         </p>`
                         );
                         $("#plan_select_to_add_fichas").append(
                             `<option value="${plan.id_plan_ficha}">
-                            ${plan.nombre_plan} - ${plan.precio_plan}
+                            ${plan.nombre_plan} - $${plan.precio_plan}
                         </option>`
                         );
                         $("#containerListPlanesModal").append(
@@ -794,7 +792,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                             <!-- Encabezado del plan -->
                             <div class="col-8">
                                 <label class="fw-bold text-primary mb-0">
-                                Plan `+$counterPlanes+`- 
+                                <i class="bi bi-tag text-primary fs-5"></i> Plan `+$counterPlanes+`- 
                                 <b class="text-dark">$${plan.precio_plan}</b>
                                 </label>
                             </div>
@@ -846,7 +844,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                                 if (total_fichs && total_fichs.cantidad_total > 0) {
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>$${plan.precio_plan}</b>
                                         </p>`
                                     );
                                     // AQUI QUEDE. COLOCARLE EL ID AL PLAN DE (TOTALFICHASDISPONIBLES.), PARA CUANDO
@@ -855,7 +853,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                                     // Si no hay registros, muestra 0
                                     $("#container_fichasTotalesPV").append(
                                         `<p class="mb-1">
-                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>${plan.nombre_plan}</b>
+                                            <b id="id_plan_${plan.id_plan_ficha}">${total_fichs.cantidad_total}</b> fichas de <b>$${plan.precio_plan}</b>
                                             
                                         </p>`
                                     );
@@ -951,7 +949,7 @@ $(document).on("input change", "#porcent_of_corte", function() {
                     $("#container_historial_fichs").append(
                         `
                         <div class="timeline-item">
-                            <h6 class="historial_list lista_corte">${historial.last_quantity_added} Fichas agregadas.</h6>
+                            <h6 class="historial_fichas_add">${historial.last_quantity_added} Fichas agregadas.</h6>
                             <small>${historial.register_date}</small>
                         </div>
                         `
