@@ -1,6 +1,9 @@
 
 
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 header('Content-Type: application/json; charset=utf-8');
 include_once(__DIR__ . "/../../database/bd.php");
 $conexionBD = BD::crearInstancia();
@@ -24,9 +27,11 @@ elseif (isset($_GET['idLocalidad_input_locality'])) {
     $save_PV->bindParam(':name_locality_fk_pv', $idPueblo);
     $save_PV->bindParam(':nombre_pv', $nombrePV);
     $save_PV->execute();
+// Obtener el ID recién insertado
+    $ID_lastClientPV = $conexionBD->lastInsertId();
 
-    $consulta_clientePV = $conexionBD->prepare("SELECT * FROM `cliente_puntoventa` WHERE name_locality_fk_pv=:idPueblo");
-    $consulta_clientePV->bindParam(':idPueblo', $idPueblo);
+    $consulta_clientePV = $conexionBD->prepare("SELECT * FROM `cliente_puntoventa` WHERE id_client_pv=:id_client_pv");
+    $consulta_clientePV->bindParam(':id_client_pv', $ID_lastClientPV);
     $consulta_clientePV->execute();
     $clientPV_List = $consulta_clientePV->fetchAll();
     header('Content-Type: application/json');
@@ -44,7 +49,21 @@ elseif (isset($_GET['idClientCorte'])) {
     $save_PV->bindParam(':precio_plan', $precioPlan_pv);
     $save_PV->bindParam(':id_cliente_pv_fk', $idClienteCorte);
     $save_PV->execute();
+    // Obtener el ID recién insertado
+    $ID_lastPlan = $conexionBD->lastInsertId();
 
+    $ultCantidadAdd = 0;
+    $cantidadTotal = 0;
+    $fecha_actual = (new DateTime("now", new DateTimeZone("America/Mexico_City")))->format("Y-m-d h:i:s a");
+
+    $setRowFichasDisponible = "INSERT INTO fichas_disponibles (id_ficha_disponible, ult_cantidad_add, cantidad_total, fecha_regis_cantidad, id_plan_fk) VALUES(NULL, :ult_cantidad_add, :cantidad_total, :fecha_regis_cantidad, :id_plan_fk)";
+    $insertRow = $conexionBD->prepare($setRowFichasDisponible);
+    $insertRow->bindValue(':ult_cantidad_add', $ultCantidadAdd, PDO::PARAM_INT);
+    $insertRow->bindValue(':cantidad_total', $cantidadTotal, PDO::PARAM_INT);
+    $insertRow->bindValue(':fecha_regis_cantidad', $fecha_actual);
+    $insertRow->bindValue(':id_plan_fk', $ID_lastPlan, PDO::PARAM_INT);
+    $insertRow->execute();
+    
     $consulta_PlanesPV = $conexionBD->prepare("SELECT * FROM `plan_fichas` WHERE id_cliente_pv_fk=:id_cliente_pv_fk");
     $consulta_PlanesPV->bindParam(':id_cliente_pv_fk', $idClienteCorte);
     $consulta_PlanesPV->execute();
@@ -75,25 +94,6 @@ elseif (isset($_GET['id_cliente_consul_planes'])) {
     $consulta_PlanesPV->execute();
     $planestPV_List = $consulta_PlanesPV->fetchAll(PDO::FETCH_ASSOC);
 
-
-
-
-    // // 🔹 Consulta los planes
-    // $consulta_PlanesPV = $conexionBD->prepare("
-    // SELECT * FROM plan_fichas WHERE id_cliente_pv_fk = :id_cliente_pv_fk");
-    // $consulta_PlanesPV->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
-    // $consulta_PlanesPV->execute();
-    // $planestPV_List = $consulta_PlanesPV->fetchAll(PDO::FETCH_ASSOC);
-    
-// 🔹 Consulta los historial de fichas addes del cliente
-//     $consulta_history_fichs = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_cliente_pv_fk = :id_cliente_pv_fk
-// ");
-//     $consulta_history_fichs->bindParam(':id_cliente_pv_fk', $id_cliente_consul_planes);
-//     $consulta_history_fichs->execute();
-//     $hist_client_fichs = $consulta_history_fichs->fetchAll(PDO::FETCH_ASSOC);
-
-// ______________________________________________________________________________________________
-    // 🔹 Combina ambos arrays en una sola respuesta
     $respuesta = [
         "planes" => $planestPV_List
     ];
@@ -270,17 +270,35 @@ elseif (isset($_GET['idDelPlan'])) {
 elseif (isset($_GET['id_client_to_history'])) {
     $id_client_to_history = $_GET['id_client_to_history'];
     
-    $consulta = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_client_history = :id_client_history");
+    $consulta = $conexionBD->prepare("SELECT * FROM historial_fichas_agregadas WHERE id_client_history = :id_client_history ORDER BY id_fichs_add DESC");
     $consulta->bindParam(':id_client_history', $id_client_to_history);
     $consulta->execute();
     // Obtener los resultados
     $fichsHistory = $consulta->fetchAll(PDO::FETCH_ASSOC);
 
-    $get_historial_cortes = $conexionBD->prepare("SELECT * FROM cortes_fichas WHERE id_client_pv = :id_client_pv");
-    $get_historial_cortes->bindParam(':id_client_pv', $id_client_to_history);
-    $get_historial_cortes->execute();
-    // Obtener historial de cortes..
-    $list_cortes = $get_historial_cortes->fetchAll(PDO::FETCH_ASSOC);
+    // Consulta con INNER JOIN para obtener datos completos del corte, cliente y empleado
+$get_historial_cortes = $conexionBD->prepare("
+        SELECT
+        cf.*,
+        cp.nombre_pv,
+        e.id_empleado,
+        e.name_empleado,
+        e.apellidos_empleado
+    FROM cortes_fichas AS cf
+    INNER JOIN cliente_puntoventa AS cp ON cf.id_client_pv = cp.id_client_pv
+    INNER JOIN empleados AS e ON cf.id_empleado_cobro = e.id_empleado
+WHERE cf.id_client_pv = :id_client_pv
+ORDER BY cf.id_corte_ficha DESC");
+$get_historial_cortes->bindParam(':id_client_pv', $id_client_to_history);
+$get_historial_cortes->execute();
+
+// Guardar el historial completo
+$list_cortes = $get_historial_cortes->fetchAll(PDO::FETCH_ASSOC);
+    
+    // $get_historial_cortes->bindParam(':id_client_pv', $id_client_to_history);
+    // $get_historial_cortes->execute();
+    // // Obtener historial de cortes..
+    // $list_cortes = $get_historial_cortes->fetchAll(PDO::FETCH_ASSOC);
 
 
         $respuesta = [
@@ -346,6 +364,22 @@ elseif (isset($_POST['planes2'])) {
     }
 
     echo json_encode($resultados);
+} elseif (isset($_GET['get_planes_actualizados'])) {
+    $idClientPv = $_GET['get_planes_actualizados'];
+
+    $consulta = $conexionBD->prepare("
+        SELECT pf.id_plan_ficha,
+        pf.precio_plan,
+        pf.nombre_plan,
+        fd.cantidad_total
+        FROM plan_fichas pf
+        INNER JOIN fichas_disponibles fd ON fd.id_plan_fk = pf.id_plan_ficha WHERE pf.id_cliente_pv_fk =:idCliente");
+    $consulta->bindParam(':idCliente', $idClientPv, PDO::PARAM_INT);
+    $consulta->execute();
+    $planes = $consulta->fetchAll(PDO::FETCH_ASSOC);
+
+    echo json_encode($planes);
+    exit;
 }
 else {
     $consulta = $conexionBD->prepare("SELECT * FROM `localidad`");

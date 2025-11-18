@@ -2,6 +2,13 @@
 
  
 <?php include("header.php"); ?>
+<?php
+        if ($_SESSION["tipoPuestoEmpleado"] == "Gerente de Cobranza") {
+                // código...
+                echo"No autorizado";
+                return;
+        }
+        ?>
 <?php include("../resources/php/pendiente_controller.php"); ?>
 
  <!-- lista de pendientes... -->
@@ -9,7 +16,96 @@
         <div class="row">
                 <div class="col-12">
                         <div class="row">
-                                <div class="col-md-3">
+                                
+
+                                <div class="col-md-9">
+                                        <div class="table-responsive">
+                                                <table class="table table-hover "  id="tablaPendientes" class="table table-striped table-bordered" style="width:100%">
+                                                        <thead  class="table-primary">
+                                                                <tr>
+                                                                        <th scope="col">#</th>
+                                                                        <th scope="col">localidad</th>
+                                                                        <th scope="col">Tipo</th>
+                                                                        <th scope="col">Cliente</th>
+                                                                        <th scope="col">Fecha</th>
+                                                                        <!-- <th scope="col">Referencia</th> -->
+                                                                        <!-- <th scope="col">Descripción</th> -->
+                                                                        <th scope="col">Estado</th>
+                                                                        <!-- <th scope="col">Creado</th> -->
+                                                                        <th scope="col">Seleccionar</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                <?php  
+                                                                $cont = 1;
+                                                                foreach($listaPendientes as $pendientes){ ?>
+                                                                <tr class="fila-pendiente" data-idtarea="<?php echo $pendientes['id_pend'] ?>"
+                                                                data-titulo_pend="<?php echo $pendientes['titulo_pend'] ?>"
+                                                                data-nombre_client="<?php echo $pendientes['name_client'] ?>"
+                                                                data-number_phone="<?php echo $pendientes['numero_tel'] ?>"
+                                                                data-address="<?php echo $pendientes['calle_refer'] ?>"
+                                                                data-description="<?php echo $pendientes['descrip_pend'] ?>"
+                                                                data-estado_pend="<?php echo $pendientes['estado_pend'] ?>"
+                                                                data-fecha_creacted="<?php echo $pendientes['fecha_creacion'] ?>"
+                                                                data-name_locality="<?php foreach($pendientes['locality'] as $town) {
+                                                                                echo $town['name_locality'];
+                                                                        }?>"
+                                                                >
+                                                                        <td style="cursor: pointer;" class="fw-bold" scope="row"><?php echo $cont ?></td>
+                                                                        <td style="cursor: pointer;"><?php
+                                                                        foreach($pendientes['locality'] as $town) {
+                                                                                echo $town['name_locality'];
+                                                                        }
+                                                                        ?></td>
+                                                                        <td style="cursor: pointer;"><?php echo $pendientes['titulo_pend'] ?></td>
+                                                                        <td style="cursor: pointer;"><?php echo $pendientes['name_client'] ?></td>
+                                                                        <td style="cursor: pointer;"><?php echo $pendientes['fecha_creacion'] ?></td>
+                                                                        <td style="cursor: pointer;">
+                                                                                <?php
+                                                                                $estado = $pendientes['estado_pend'];
+
+                                                                                // Definir clase según el estado
+                                                                                switch ($estado) {
+                                                                                        case 'Urgente':
+                                                                                        $clase = 'bg-danger'; // Rojo
+                                                                                        break;
+                                                                                        case 'Pendiente':
+                                                                                        $clase = 'bg-warning'; // amarillo
+                                                                                        break;
+                                                                                        case 'En proceso':
+                                                                                        $clase = 'bg-primary'; // Azul
+                                                                                        break;
+                                                                                        case 'Finalizado':
+                                                                                        $clase = 'bg-success'; // Verde
+                                                                                        break;
+                                                                                        default:
+                                                                                        $clase = 'bg-secondary'; // Gris por defecto
+                                                                                        break;
+                                                                                }
+                                                                                ?>
+                                                                                <span class="badge fw-bold text-white <?= $clase; ?>">
+                                                                                        <?php echo $pendientes['estado_pend'] ?>
+                                                                                </span>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                                <form action="" method="post">
+                                                                                        <input type="hidden" name="id_pend" id="id_pend" value="<?php echo $pendientes['id_pend']; ?>">
+
+                                                                                        <button type="submit" class="btn btn-info" name="accion" value="Seleccionar">
+                                                                                        <i class="bi bi-hand-index-thumb"></i>
+                                                                                        </button>
+                                                                                </form>
+                                                                        </td>
+                                                                </tr>
+                                                                <?php $cont++; } ?>
+                                                                
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                                        
+                                </div>
+
+                                <div class="col-md-3 mt-5 mb-4">
                                         <form action="" method="post">
                                                 <div class="card">
                                                         <div class="card-header"> Formulario de Registro </div>
@@ -139,90 +235,6 @@
                                                  </div>
                                         </form>
                                 </div>
-
-                                <div class="col-md-9">
-                                        <div class="table-responsive">
-                                                <table class="table table-hover "  id="tablaPendientes" class="table table-striped table-bordered" style="width:100%">
-                                                        <thead  class="table-primary">
-                                                                <tr>
-                                                                        <th scope="col">#</th>
-                                                                        <th scope="col">localidad</th>
-                                                                        <th scope="col">Tipo</th>
-                                                                        <th scope="col">Cliente</th>
-                                                                        <th scope="col">Fecha</th>
-                                                                        <!-- <th scope="col">Referencia</th> -->
-                                                                        <!-- <th scope="col">Descripción</th> -->
-                                                                        <th scope="col">Estado</th>
-                                                                        <!-- <th scope="col">Creado</th> -->
-                                                                        <th scope="col">Acción</th>
-                                                                </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                                <?php  
-                                                                $cont = 1;
-                                                                foreach($listaPendientes as $pendientes){ ?>
-                                                                <tr class="fila-pendiente" data-idtarea="<?php echo $pendientes['id_pend'] ?>"
-                                                                data-titulo_pend="<?php echo $pendientes['titulo_pend'] ?>"
-                                                                data-nombre_client="<?php echo $pendientes['name_client'] ?>"
-                                                                data-number_phone="<?php echo $pendientes['numero_tel'] ?>"
-                                                                data-address="<?php echo $pendientes['calle_refer'] ?>"
-                                                                data-description="<?php echo $pendientes['descrip_pend'] ?>"
-                                                                data-estado_pend="<?php echo $pendientes['estado_pend'] ?>"
-                                                                data-fecha_creacted="<?php echo $pendientes['fecha_creacion'] ?>"
-                                                                data-name_locality="<?php foreach($pendientes['locality'] as $town) {
-                                                                                echo $town['name_locality'];
-                                                                        }?>"
-                                                                >
-                                                                        <td style="cursor: pointer;" class="fw-bold" scope="row"><?php echo $cont ?></td>
-                                                                        <td style="cursor: pointer;"><?php
-                                                                        foreach($pendientes['locality'] as $town) {
-                                                                                echo $town['name_locality'];
-                                                                        }
-                                                                        ?></td>
-                                                                        <td style="cursor: pointer;"><?php echo $pendientes['titulo_pend'] ?></td>
-                                                                        <td style="cursor: pointer;"><?php echo $pendientes['name_client'] ?></td>
-                                                                        <td style="cursor: pointer;"><?php echo $pendientes['fecha_creacion'] ?></td>
-                                                                        <td style="cursor: pointer;">
-                                                                                <?php
-                                                                                $estado = $pendientes['estado_pend'];
-
-                                                                                // Definir clase según el estado
-                                                                                switch ($estado) {
-                                                                                        case 'Urgente':
-                                                                                        $clase = 'bg-danger'; // Rojo
-                                                                                        break;
-                                                                                        case 'Pendiente':
-                                                                                        $clase = 'bg-warning'; // amarillo
-                                                                                        break;
-                                                                                        case 'En proceso':
-                                                                                        $clase = 'bg-primary'; // Azul
-                                                                                        break;
-                                                                                        case 'Finalizado':
-                                                                                        $clase = 'bg-success'; // Verde
-                                                                                        break;
-                                                                                        default:
-                                                                                        $clase = 'bg-secondary'; // Gris por defecto
-                                                                                        break;
-                                                                                }
-                                                                                ?>
-                                                                                <span class="badge fw-bold text-white <?= $clase; ?>">
-                                                                                        <?php echo $pendientes['estado_pend'] ?>
-                                                                                </span>
-                                                                        </td>
-                                                                        <td>
-                                                                                <form action="" method="post">
-                                                                                        <input type="hidden" name="id_pend" id="id_pend" value="<?php echo $pendientes['id_pend'] ?>">
-                                                                                        <input type="submit" class="btn btn-info" value="Seleccionar" name="accion">
-                                                                                </form>
-                                                                        </td>
-                                                                </tr>
-                                                                <?php $cont++; } ?>
-                                                                
-                                                        </tbody>
-                                                </table>
-                                        </div>
-                                        
-                                </div>
                         </div>
                 </div>
                 
@@ -292,7 +304,7 @@
                                 </div>
                                 
                                 <!-- Footer -->
-                                <div class="modal-footer">
+                                <div class="modal-footer text-center">
                                         <!-- <button type="submit" name="accion" value="Finalizar" class="btn btn-success">Finalizar</button> -->
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                         
@@ -399,10 +411,12 @@ $('#tablaPendientes').DataTable({
     let otroInput = $("#otro_input");
     if ($(this).val() === "Otro") {
         otroInput.show();   // equivalente a style.display = "block"
+        $('#otro_tipo').focus();
     } else {
         otroInput.hide();   // equivalente a style.display = "none"
     }
 });
+
 
 </script>
 <?php include("footer.php"); ?>

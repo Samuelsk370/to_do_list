@@ -14,6 +14,8 @@ if (isset($_POST['otro_tipo']) && !empty($_POST['otro_tipo'])) {
     $titulo_pend = $_POST['otro_tipo']; // Valor escrito en el input
 } else if(isset($_POST['titulo_pend']) && !empty($_POST['titulo_pend'])) {
     $titulo_pend = $_POST['titulo_pend']; // Valor del select
+} else if(isset($_POST['input_otro_pend']) && !empty($_POST['input_otro_pend'])) {
+    $titulo_pend = $_POST['input_otro_pend']; // Valor del select
 }
 $name_client = isset($_POST['name_client'])?$_POST['name_client']:'';
 $numero_tel = isset($_POST['numero_tel'])?$_POST['numero_tel']:'';

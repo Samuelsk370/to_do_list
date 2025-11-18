@@ -3,12 +3,19 @@
         <?php
         include("views/header.php");
         
+        if ($_SESSION["tipoPuestoEmpleado"] == "Gerente de Cobranza") {
+                // código...
+                echo"<script type='text/javascript'>
+                        window.location.href = '{$urlBase}views/cortes_fichas.php';
+                        </script>";
+                die();
+        }
         ?>
 <?php include("./resources/php/index_controller.php"); ?>
 
     </header>
     <main>
-  <div class="container">
+  <div class="container  mt-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
           <h5 class="mb-0">Lista de pendientes</h5>
           <span class="badge bg-primary fs-6">

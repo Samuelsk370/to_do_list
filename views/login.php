@@ -5,7 +5,7 @@ $urlBase = "http://localhost/to_do_list/"; //AQUÍ EN LUGAR DE "localhost" SE DE
 
 include_once("../database/bd.php");
 $conexionBD = BD::crearInstancia();
-
+// __DIR__
 if ($_POST) {
      $mensaje = "Usuario o contraseña incorrecto";
 
@@ -65,9 +65,9 @@ if ($_POST) {
     <main>
         <di class="container">
             <div class="row">
-                <div class="col-4">
+                <div class="col-12 col-md-4">
                 </div>
-                <div class="col-4">
+                <div class="col-12 col-md-4 mx-4">
                     <form action="#" method="post">
 
                         <div class="card">

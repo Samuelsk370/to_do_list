@@ -1,6 +1,12 @@
 
 
 <?php include("header.php"); ?>
+<?php
+        if ($_SESSION["tipoPuestoEmpleado"] != "Lider") {
+                echo"No autorizado";
+                return;
+        }
+        ?>
 <?php include("../resources/php/empleados_controller.php"); ?>
  
  <!-- lista de localidades... -->
@@ -70,6 +76,10 @@
                                                                             <option <?php echo($tipo_puesto == 'Otro')?"selected":""; ?> value="Otro">Otro</option>
                                                                     </select>
                                                             </div>
+                                                            <!-- Campo oculto por defecto -->
+                                                                <div class="mb-3" id="input_otro_puesto" style="display: none;">
+                                                                        <input type="text" class="form-control" name="otro_puesto" id="otro_puesto" placeholder="Espicificar tipo">
+                                                                </div>
                                                             <div class="mb-3">
                                                                         <label for="" class="form-label">Nombre de usuario</label>
                                                                         <input
@@ -127,7 +137,7 @@
                                                                         <th scope="col">Puesto</th>
                                                                         <th scope="col">Usuario</th>
                                                                         <th scope="col">Contraseña</th>
-                                                                        <th scope="col">Acción</th>
+                                                                        <th scope="col">Seleccionar</th>
                                                                 </tr>
                                                         </thead>
                                                         <tbody>
@@ -141,12 +151,16 @@
                                                                         <td><?php echo $empleado['tipo_puesto'] ?></td>
                                                                         <td><?php echo $empleado['name_user'] ?></td>
                                                                         <td><?php echo $empleado['passw_user'] ?></td>
-                                                                        <td>
+                                                                        <td class="text-center">
                                                                                 <form action="" method="post">
-                                                                                        <input type="hidden" name="id_empleado" id="id_empleado" value="<?php echo $empleado['id_empleado'] ?>">
-                                                                                        <input type="submit" class="btn btn-info" value="Seleccionar" name="accion">
+                                                                                        <input type="hidden" name="id_empleado" id="id_empleado" value="<?php echo $empleado['id_empleado']; ?>">
+
+                                                                                        <button type="submit" class="btn btn-info" name="accion" value="Seleccionar">
+                                                                                        <i class="bi bi-hand-index-thumb"></i>
+                                                                                        </button>
                                                                                 </form>
                                                                         </td>
+
                                                                 </tr>
                                                                 <?php $container++; } ?>
                                                                 
@@ -177,7 +191,7 @@
     $(".btnAbrirModal").click(function(){
         $("#modal_descrip_pendent").modal("show");  // abrir modal
     });
-function btnCancelarEmpleadoss() {
+function btnCancelarEmpleadoss() { 
         // alert("Hola, este es un mensaje de alerta!");
   document.getElementById("btn_save_town_empl").style.display="inline";
   document.getElementById("btnCancelarEmpleados").style.display="none";
@@ -201,5 +215,16 @@ const togglePassword = document.getElementById("togglePassword");
     // Cambiar el ícono
     this.innerHTML = type === "password" ? '<i class="bi bi-eye"></i>' : '<i class="bi bi-eye-slash"></i>';
   });
+
+   // MOSTRAR INPUT AL SELECCIONAR OPCION "OTRO" EN TIPO PUESTO
+    $("#tipo_puesto").on("change", function () {
+    let otroPuesto = $("#input_otro_puesto");
+    if ($(this).val() === "Otro") {
+        otroPuesto.show();   // equivalente a style.display = "block"
+        $('#otro_puesto').focus();
+    } else {
+        otroPuesto.hide();   // equivalente a style.display = "none"
+    }
+});
 </script>
 <?php include("footer.php"); ?>

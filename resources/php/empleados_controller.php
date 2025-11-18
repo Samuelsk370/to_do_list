@@ -6,13 +6,19 @@
 include_once(__DIR__ . "/../../database/bd.php");
 $conexionBD=BD::crearInstancia();
 
+$tipo_puesto ="";
+if (isset($_POST['otro_puesto']) && !empty($_POST['otro_puesto'])) {
+    $tipo_puesto = $_POST['otro_puesto']; // Valor escrito en el input
+} else if(isset($_POST['tipo_puesto']) && !empty($_POST['tipo_puesto'])) {
+    $tipo_puesto = $_POST['tipo_puesto']; // Valor del select
+}
 
 // print_r($_POST); 
 $id_empleado = isset($_POST['id_empleado'])?$_POST['id_empleado']:'';
 $name_empleado = isset($_POST['name_empleado'])?$_POST['name_empleado']:'';
 
 $apellidos_empleado = isset($_POST['apellidos_empleado'])?$_POST['apellidos_empleado']:'';
-$tipo_puesto = isset($_POST['tipo_puesto'])?$_POST['tipo_puesto']:'';
+// $tipo_puesto = isset($_POST['tipo_puesto'])?$_POST['tipo_puesto']:'';
 $name_user = isset($_POST['name_user'])?$_POST['name_user']:'';
 $passw_user = isset($_POST['passw_user'])?$_POST['passw_user']:'';
 

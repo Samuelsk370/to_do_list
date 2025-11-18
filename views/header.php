@@ -8,7 +8,8 @@ if (!isset($_SESSION["user_login"])) {
             window.location.href = '{$urlBase}views/login.php';
         </script>";
      die();
-}
+} 
+
 ?>
 <!doctype html>
 <html lang="es">
@@ -75,7 +76,7 @@ if (!isset($_SESSION["user_login"])) {
 
 <!-- DataTables con Bootstrap 5 -->
 <script src="../resources/js/dataTables.bootstrap5.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </head>
 
@@ -87,7 +88,7 @@ if (!isset($_SESSION["user_login"])) {
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="#">
-            <img width="70" height="70" style="border-radius: 50%;" src="http://localhost/to_do_list/storage/img/logoStarnet.png">
+            <img width="60" height="60" style="border-radius: 50%;" src="http://localhost/to_do_list/storage/img/logoStarnet.png">
         </a>
 
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" 
@@ -98,6 +99,11 @@ if (!isset($_SESSION["user_login"])) {
 
         <div class="collapse navbar-collapse" id="collapsibleNavId">
             <ul class="navbar-nav me-auto mt-2 mt-lg-0">
+                 <?php
+                    if (isset($_SESSION["tipoPuestoEmpleado"]) && 
+                    ($_SESSION["tipoPuestoEmpleado"] != "Gerente de Cobranza")):
+                    
+                ?>
                 <li class="nav-item">
                     <a class="nav-link <?php echo ($current_page == 'index.php') ? 'active' : ''; ?>" 
                        href="<?php echo $urlBase;?>index.php"><i class="bi bi-house-fill fs-5"></i> INICIO</a>
@@ -110,6 +116,7 @@ if (!isset($_SESSION["user_login"])) {
                     <a class="nav-link <?php echo ($current_page == 'localidades.php') ? 'active' : ''; ?>" 
                        href="<?php echo $urlBase;?>views/localidades.php"><i class="bi bi-geo-alt-fill fs-5"></i> LOCALIDADES</a>
                 </li>
+                <?php endif; ?>
                  <?php
                     if (isset($_SESSION["tipoPuestoEmpleado"]) && 
                     ($_SESSION["tipoPuestoEmpleado"] == "Lider")):
@@ -131,11 +138,14 @@ if (!isset($_SESSION["user_login"])) {
                 <?php endif; ?>
                 
                 <li>
-                    <a class="nav-link" href="<?php echo $urlBase;?>resources/php/logout.php"><i class="bi bi-person-walking fs-5"></i> Salir</a>
+                    <a class="nav-link btn-logout" href="#">
+                        <i class="bi bi-person-walking fs-5"></i> Salir
+                    </a>
                 </li>
             </ul>
             <div class="cont_perfil_user">
-                <i class="bi bi-person-circle fs-2"></i> <?php echo $_SESSION['fullNameEmpleado'] ?>
+                <i class="bi bi-person-circle fs-2"></i> 
+                <span id="nombre_perfil_emp"><?php echo $_SESSION['fullNameEmpleado'] ?></span>
             </div>
         </div>
     </div>
@@ -145,6 +155,24 @@ if (!isset($_SESSION["user_login"])) {
     $('#collapsibleNavId').removeClass('show'); 
     // alert("jejej")
   });
-</script>
 
+  $(".btn-logout").on("click", function(e) {
+    e.preventDefault(); // evitar que el enlace salga automáticamente
+
+    Swal.fire({
+        title: "¿Deseas cerrar sesión?",
+        text: "Se cerrará la aplicación y deberás iniciar sesión nuevamente.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, salir",
+        cancelButtonText: "Cancelar",
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Redirigir al logout real
+            window.location.href = "<?php echo $urlBase; ?>resources/php/logout.php";
+        }
+    });
+});
+</script>
 <br>

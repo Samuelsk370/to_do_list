@@ -1,5 +1,12 @@
  
 <?php include("header.php"); ?>
+<?php
+        if ($_SESSION["tipoPuestoEmpleado"] == "Gerente de Cobranza") {
+                // código...
+                echo"No autorizado";
+                return;
+        }
+        ?>
 <?php include("../resources/php/locality_controller.php"); ?>
  
  <!-- lista de localidades... -->
@@ -7,7 +14,7 @@
         <div class="row">
                 <div class="col-12">
                         <div class="row">
-                                <div class="col-md-3">
+                                <div class="col-md-3 mb-5">
                                         <form action="" method="post" id="form_localidad">
                                                 <div class="card">
                                                         <div class="card-header">
@@ -42,18 +49,21 @@
                                                                         placeholder="Nombre de la localidad"/>
                                                                 </div>
                                                         
-                                                                <?php if ($modo === 'seleccionado'): ?>
+                                                               
+                                                               
+                                                                
+                                                        </div>
+                                                        <div class="card-footer text-center">
+                                                                 <?php if ($modo === 'seleccionado'): ?>
                                                                         <button type="submit" style="display:none;" id="btn_save_town" name="accion" value="Guardar" class="btn btn-success mb-1">Guardar</button>
                                                                         <button type="button" style="display:inline;" id="btn_cancelar" onclick="formClean()" class="btn btn-secondary mb-1">Cancelar</button>
-                                                                        <button type="button" style="display:inline;" id="bt_add_town" name="accion" value="add_pendiente" class="btn btn-success btn_activo mb-1" data-bs-toggle="modal" data-bs-target="#modal_localidad">Agregar tarea</button>
                                                                         <button type="submit" style="display:inline;" id="bt_update_town" name="accion" value="Actualizar" class="btn btn-primary btn_activo mb-1">Actualizar</button>
                                                                         <button type="submit" style="display:inline;" id="bt_delete_town" name="accion" value="Eliminar" class="btn btn-danger btn_activo mb-1">Eliminar</button>
                                                                         
-                                                                <?php else: ?>
-                                                                <button type="submit" id="btn_save_town" name="accion" value="Guardar" class="btn btn-success">Guardar</button>
+                                                                 <?php else: ?>
+                                                                <button type="submit" id="btn_save_town" name="accion" value="Guardar localidad" class="btn btn-success">Guardar</button>
                                                                         
                                                                 <?php endif; ?>
-                                                                
                                                         </div>
                                                 </div>
                                         </form>
@@ -66,7 +76,7 @@
                                                                 <tr>
                                                                         <th scope="col">ID</th>
                                                                         <th scope="col">Nombre</th>
-                                                                        <th scope="col">Acción</th>
+                                                                        <th class="text-center" scope="col">Seleccionar</th>
                                                                 </tr>
                                                         </thead>
                                                         <tbody>
@@ -76,10 +86,19 @@
                                                                 <tr class="fila_localidades">
                                                                         <td scope="row"><?php echo $contadorLocalidad; ?></td>
                                                                         <td><?php echo $locality['name_locality'] ?></td>
-                                                                        <td>
+                                                                        <!-- <td>
                                                                                 <form action="" method="post">
                                                                                         <input type="hidden" name="id_localidad" id="id_localidad" value="<?php echo $locality['id_localidad'] ?>">
                                                                                         <input type="submit" class="btn btn-info" value="Seleccionar" name="accion">
+                                                                                </form>
+                                                                        </td> -->
+                                                                        <td class="text-center">
+                                                                                <form action="" method="post">
+                                                                                        <input type="hidden" name="id_localidad" id="id_localidad" value="<?php echo $locality['id_localidad']; ?>">
+
+                                                                                        <button type="submit" class="btn btn-info" name="accion" value="Seleccionar">
+                                                                                        <i class="bi bi-hand-index-thumb"></i>
+                                                                                        </button>
                                                                                 </form>
                                                                         </td>
                                                                 </tr>
@@ -121,7 +140,10 @@
                                                                 <option value="Otro">Otro</option>
                                                         </select>
                                                 </div>
-                                                
+                                                 <!-- Campo oculto por defecto -->
+                                                <div class="mb-3" id="cont_otro_pendiente" style="display: none;">
+                                                        <input type="text" class="form-control" name="input_otro_pend" id="input_otro_pend" placeholder="Espicificar tipo">
+                                                </div>
 
                                                 
                                                 <div class="mb-3">
@@ -207,13 +229,22 @@ function formClean() {
         // alert("Hola, este es un mensaje de alerta!");
   document.getElementById("btn_save_town").style.display="inline";
   document.getElementById("btn_cancelar").style.display="none";
-  document.getElementById("bt_add_town").style.display="none";
   document.getElementById("bt_update_town").style.display="none";
   document.getElementById("bt_delete_town").style.display="none";
   document.getElementById("id_localidad").value="";
   document.getElementById("name_locality").value="";
 
 }
+   // MOSTRAR INPUT AL SELECCIONAR OPCION "OTRO" EN TIPO PUESTO
+    $("#titulo_pend").on("change", function () {
+    let otroPendi_ = $("#cont_otro_pendiente");
+    if ($(this).val() === "Otro") {
+        otroPendi_.show();   // equivalente a style.display = "block"
+        $('#input_otro_pend').focus();
+    } else {
+        otroPendi_.hide();   // equivalente a style.display = "none"
+    }
+});
 
 </script>
 <?php include("footer.php"); ?>

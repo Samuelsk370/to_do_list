@@ -5,6 +5,12 @@
 include_once(__DIR__ . "/../../database/bd.php");
 $conexionBD=BD::crearInstancia();
 
+$tipo_pendiente ="";
+if (isset($_POST['input_otro_pend']) && !empty($_POST['input_otro_pend'])) {
+    $tipo_pendiente = $_POST['input_otro_pend']; // Valor escrito en el input
+} else if(isset($_POST['titulo_pend']) && !empty($_POST['titulo_pend'])) {
+    $tipo_pendiente = $_POST['titulo_pend']; // Valor del select
+}
 
 // print_r($_POST); 
 $id_localidad = isset($_POST['id_localidad'])?$_POST['id_localidad']:'';
