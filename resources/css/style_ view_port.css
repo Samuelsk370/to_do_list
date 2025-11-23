@@ -1,0 +1,21 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Alto mínimo de la pantalla */
+}
+
+.contenido {
+    flex: 1; /* Empuja el footer hacia abajo */
+}
+
+.footer {
+    background: #222;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}

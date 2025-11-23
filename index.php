@@ -13,8 +13,7 @@
         ?>
 <?php include("./resources/php/index_controller.php"); ?>
 
-    </header>
-    <main>
+    
   <div class="container  mt-3">
       <div class="d-flex justify-content-between align-items-center mb-2">
           <h5 class="mb-0">Lista de pendientes</h5>
@@ -50,16 +49,10 @@
                     data-description="<?php echo $pendientes['descrip_pend'] ?>"
                     data-estado_pend="<?php echo $pendientes['estado_pend'] ?>"
                     data-fecha_creacted="<?php echo $pendientes['fecha_creacion'] ?>"
-                    data-name_locality="<?php foreach($pendientes['locality'] as $town) {
-                                    echo $town['name_locality'];
-                            }?>"
+                    data-name_locality="<?php echo $pendientes['name_locality'] ?>"
                     >
                             <td style="cursor: pointer;" class="fw-bold" scope="row"><?php echo $cont ?></td>
-                            <td style="cursor: pointer;"><?php
-                            foreach($pendientes['locality'] as $town) {
-                                    echo $town['name_locality'];
-                            }
-                            ?></td>
+                            <td style="cursor: pointer;"><?php echo $pendientes['name_locality']?></td>
                             <td style="cursor: pointer;"><?php echo $pendientes['titulo_pend'] ?></td>
                             <td style="cursor: pointer;"><?php echo $pendientes['name_client'] ?></td>
                             <td style="cursor: pointer;"><?php echo $pendientes['fecha_creacion'] ?></td>
@@ -100,7 +93,7 @@
 
 
   </div>
-</main>
+
 
 
 <!-- Estructura del Modal -->
@@ -171,11 +164,9 @@
                                 </div>
                         </form>
 
-                        </div>
-                        </div>
-                        </div>
-
-
+                </div>
+        </div>
+</div>
 
 <script>
     

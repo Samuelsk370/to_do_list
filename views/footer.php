@@ -1,7 +1,6 @@
-<br>
-<footer class="bg-dark text-white text-center p-3">
-        <p class="mb-0">&copy; 2025 Starnet S. I.</p>
-    </footer>
+</main>
+
+
 
      <!-- Bootstrap JavaScript Libraries -->
     <script
@@ -17,10 +16,12 @@
 
 
 
-<!-- jQuery -->
-<script src="../resources/js/jquery-3.7.1.min.js"></script>
+    <!-- jQuery -->
+    <script src="../resources/js/jquery-3.7.1.min.js"></script>
 
-
+    <footer class="bg-dark text-white text-center py-3 mt-auto">
+            <p class="mb-0">&copy; 2025 Starnet S. I.</p>
+    </footer>
 
 </body>
 

@@ -80,11 +80,14 @@ if (!isset($_SESSION["user_login"])) {
 
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
+    <main  class="flex-fill">
     <header>
         <?php 
-    $current_page = basename($_SERVER['PHP_SELF']); 
-?>
+            $current_page = basename($_SERVER['PHP_SELF']); 
+        ?>
+    </header>
+
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" href="#">
@@ -150,6 +153,7 @@ if (!isset($_SESSION["user_login"])) {
         </div>
     </div>
 </nav>
+
 <script>
     $('.navbar .navbar-toggler').on('click', function(){
     $('#collapsibleNavId').removeClass('show'); 

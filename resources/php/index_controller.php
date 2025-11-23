@@ -12,21 +12,25 @@ $consulta->execute();
 $listaPendientes=$consulta->fetchAll(); 
 
 foreach ($listaPendientes as $clave => $pendiente) {
-    $sql = "SELECT * FROM localidad
-    WHERE id_localidad IN (SELECT id_locality_fk FROM tareas_pendientes WHERE id_locality_fk = :id_locality_fk)";
-    
-    $consulta=$conexionBD->prepare($sql);
-    $consulta->bindParam(':id_locality_fk', $pendiente['id_locality_fk']);
-    $consulta->execute();
-    $localityPendiente = $consulta->fetchAll();
-    $listaPendientes[$clave]['locality'] = $localityPendiente;
+    $sql = "
+SELECT t.*, l.*
+FROM tareas_pendientes t
+INNER JOIN localidad l ON l.id_localidad = t.id_locality_fk
+WHERE t.estado_pend != 'Finalizado'
+";
+
+$consulta = $conexionBD->prepare($sql);
+$consulta->execute();
+$listaPendientes = $consulta->fetchAll(PDO::FETCH_ASSOC);
+// echo json_encode($listaPendientes);
+//     exit;
+    // $listaPendientes[$clave]['locality'] = $listaPendientes;
 }
 
 
 // $consulta=$conexionBD->prepare("SELECT * FROM `localidad`");
 // $consulta->execute();
 // $listaLocalidades=$consulta->fetchAll();
-
 
 
 ?> 

@@ -86,7 +86,7 @@ elseif (isset($_GET['id_cliente_consul_planes'])) {
             fichas_disponibles.cantidad_total,
             fichas_disponibles.fecha_regis_cantidad
         FROM plan_fichas
-        INNER JOIN fichas_disponibles 
+         fichas_disponibles 
             ON fichas_disponibles.id_plan_fk = plan_fichas.id_plan_ficha
         WHERE plan_fichas.id_cliente_pv_fk = :id_cliente_pv_fk
     ");

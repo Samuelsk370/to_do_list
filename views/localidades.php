@@ -48,11 +48,7 @@
                                                                         required
                                                                         placeholder="Nombre de la localidad"/>
                                                                 </div>
-                                                        
-                                                               
-                                                               
-                                                                
-                                                        </div>
+                                                                                                              </div>
                                                         <div class="card-footer text-center">
                                                                  <?php if ($modo === 'seleccionado'): ?>
                                                                         <button type="submit" style="display:none;" id="btn_save_town" name="accion" value="Guardar" class="btn btn-success mb-1">Guardar</button>

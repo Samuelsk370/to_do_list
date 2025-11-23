@@ -1226,7 +1226,7 @@ $(document).on("input change", ".miInput", function() {
     $("#save_new_corte").on("click", function() {
     
     // --- Datos generales para crear pdf---
-    const totalBruto = $('#total_bruto').text();
+    const totalBruto = $('#total_bruto').text(); 
     const totalDescuento = $('#total_descuento').text();
     const totalCobrar = $('#total_cobrar').text();
     const porcentaje = $('#porcent_of_corte').val();
